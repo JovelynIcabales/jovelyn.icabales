@@ -69,7 +69,7 @@
     [data-r="h2"] { font-size: clamp(28px, 4vw, 36px) !important; }
     [data-r="portrait"] { display: none !important; }
     [data-r="sec"] { padding-top: 72px !important; padding-bottom: 72px !important; }
-    [data-r="sec-work"] { padding-top: 72px !important; }
+    [data-r="sec-work"] { padding: 72px 0 !important; }
     #work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
     [data-r="hdr-inner"] { display: none !important; }
     [data-r="hdr-mobile"] { display: flex !important; }
@@ -84,8 +84,8 @@
     [data-r="h1"] { font-size: 28px !important; max-width: none !important; }
     [data-r="h2"] { font-size: 26px !important; }
     [data-r="sec"] { padding: 56px 20px !important; }
-    [data-r="sec-work"] { padding-top: 56px !important; }
-    [data-r="sec-work"] > div > div:first-child { padding-left: 20px !important; padding-right: 20px !important; }
+    [data-r="sec-work"] { padding: 56px 0 !important; }
+    #work h2 + p { max-width: none !important; }
     #work-grid { grid-template-columns: 1fr !important; margin-top: 28px !important; }
     [data-r="stats"] { grid-template-columns: 1fr !important; gap: 14px !important; }
     [data-r="stats"] > div { padding: 18px !important; }
@@ -227,11 +227,11 @@
     </div>
   </sc-if>
 
-  <section id="about" data-r="sec" style="position:relative; padding:96px 5%; overflow:hidden">
+  <section id="about" data-r="sec" style="position:relative; padding:96px 40px; overflow:hidden">
     <div aria-hidden="true" style="position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg, transparent, var(--border-subtle) 20%, var(--border-subtle) 80%, transparent); pointer-events:none"></div>
     <div aria-hidden="true" style="position:absolute; top:120px; right:-110px; width:300px; height:300px; border-radius:999px; border:1.5px dashed var(--border-dashed-violet); opacity:0.45; pointer-events:none"></div>
     <div aria-hidden="true" style="position:absolute; bottom:56px; left:-60px; width:180px; height:180px; border-radius:56px; background:var(--violet-50); transform:rotate(-14deg); pointer-events:none"></div>
-    <div data-r="about-grid" style="position:relative; width:100%; display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:start">
+    <div data-r="about-grid" style="position:relative; width:100%; max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:start">
       <div>
         <h2 data-r="h2" style="font-size:var(--text-h2); line-height:var(--lh-h2); font-weight:700; letter-spacing:var(--tracking-tight); margin:0">A Little About <span style="color:var(--violet-500)">How I Work</span></h2>
         <p style="font-size:var(--text-body); line-height:var(--lh-body); color:var(--ink-500); margin:20px 0 0; max-width:56ch; text-wrap:pretty">Every website I build starts with understanding the client's goals and ends with thorough quality checks. I enjoy transforming designs into responsive, user-friendly websites while maintaining clean structure, consistent styling, and reliable performance across desktop, tablet, and mobile devices.</p>
@@ -257,16 +257,16 @@
     </div>
   </section>
 
-  <section id="work" data-r="sec-work" style="background:var(--surface-tint); padding:96px 0 0">
-    <div style="width:100%">
-      <div style="max-width:60ch; padding:0 5%">
-        <div aria-hidden="true" style="display:flex; align-items:center; gap:10px; margin-bottom:14px"><span style="width:8px; height:8px; border-radius:999px; background:var(--violet-500)"></span><span style="width:56px; height:1.5px; background:var(--violet-300)"></span><span style="width:8px; height:8px; border-radius:999px; border:1.5px solid var(--violet-300)"></span></div>
-        <h2 data-r="h2" style="font-size:var(--text-h2); line-height:var(--lh-h2); font-weight:700; letter-spacing:var(--tracking-tight); margin:0">Selected <span style="color:var(--violet-500)">Work</span></h2>
-        <p style="font-size:var(--text-body); line-height:var(--lh-body); color:var(--ink-500); margin:14px 0 0">Client sites I built, rebuilt and shipped in Duda — service businesses across Australia and the US. Open any one for the detail.</p>
+  <section id="work" data-r="sec-work" style="background:var(--surface-tint); padding:96px 0">
+    <div style="width:100%; display:flex; flex-direction:column; align-items:center">
+      <div style="width:100%; max-width:760px; margin:0 auto; padding:0 20px; text-align:center; display:flex; flex-direction:column; align-items:center">
+        <div aria-hidden="true" style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:14px"><span style="width:8px; height:8px; border-radius:999px; background:var(--violet-500)"></span><span style="width:56px; height:1.5px; background:var(--violet-300)"></span><span style="width:8px; height:8px; border-radius:999px; border:1.5px solid var(--violet-300)"></span></div>
+        <h2 data-r="h2" style="font-size:var(--text-h2); line-height:var(--lh-h2); font-weight:700; letter-spacing:var(--tracking-tight); margin:0">Selected <span style="color:var(--violet-500)">Work</span></h2><p style="font-size: var(--text-body); line-height: var(--lh-body); color: var(--ink-500); margin: 14px 0 0; max-width: 56ch; text-align: center">Client sites I built, rebuilt and shipped in Duda — service businesses across Australia and the US. Open any one for the detail.</p>
+        
       </div>
-      <div id="work-grid" style="display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:0; margin-top:40px; width:100%">
+      <div id="work-grid" style="display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:10px; padding:5px; margin-top:40px; width:100%; justify-items:center; align-items:stretch">
         <sc-for list="{{ projects }}" as="p" hint-placeholder-count="3">
-          <button type="button" data-project="{{ p.id }}" onClick="{{ p.open }}" style="display:grid; width:100%; aspect-ratio:3/2; border:0; border-radius:0; margin:0; padding:0; cursor:pointer; overflow:hidden; position:relative; background:var(--violet-100); font-family:var(--font-sans); transition:var(--transition-base)" style-active="transform:var(--press-scale)">
+          <button type="button" data-project="{{ p.id }}" onClick="{{ p.open }}" style="display:grid; width:100%; max-width:100%; aspect-ratio:3/2; border:0; border-radius:0; margin:0; padding:0; cursor:pointer; overflow:hidden; position:relative; background:var(--violet-100); font-family:var(--font-sans); transition:var(--transition-base)" style-active="transform:var(--press-scale)">
             <div style="position:relative; width:100%; height:100%; overflow:hidden">
               <img data-zoom="true" src="{{ p.image }}" alt="{{ p.title }}" style="width:100%; height:100%; object-fit:cover; display:block; transition:transform var(--duration-slow) var(--ease-out)" style-hover="transform:scale(1.04)">
               <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(22,66,91,0) 42%, rgba(22,66,91,0.88) 100%); pointer-events:none"></div>
@@ -277,11 +277,16 @@
             </div>
           </button>
         </sc-for>
-        <div style="min-width:0; aspect-ratio:3/2; overflow:hidden; background:var(--gradient-section); display:flex; flex-direction:column; justify-content:center; gap:10px; padding:22px; text-align:left">
+        <sc-if value="{{ expanded }}" hint-placeholder-val="{{ false }}">
+        <div data-r="work-cta" style="min-width:0; aspect-ratio:3/2; width:100%; overflow:hidden; background:var(--gradient-section); display:flex; flex-direction:column; justify-content:center; gap:10px; padding:22px; text-align:left">
           <span style="font-size:var(--text-label); font-weight:500; letter-spacing:var(--tracking-wide); text-transform:uppercase; color:var(--violet-200)">And 190+ more</span>
           <p style="font-size:var(--text-body); line-height:1.5; font-weight:500; color:var(--white); margin:0; max-width:26ch; text-wrap:pretty">These are the ones I can show — the rest shipped under client accounts.</p>
           <x-import component-from-global-scope="EtechDesignSystem_684170.Button" variant="secondary" size="sm" on-click="{{ goContact }}" hint-size="150px,36px">Ask Me About Them</x-import>
         </div>
+        </sc-if>
+      </div>
+      <div style="display:flex; justify-content:center; margin-top:36px">
+        <x-import component-from-global-scope="EtechDesignSystem_684170.Button" variant="secondary" size="md" on-click="{{ toggleExpanded }}" hint-size="190px,44px">{{ moreLabel }}</x-import>
       </div>
     </div>
   </section>
@@ -296,8 +301,8 @@
         <h2 data-r="h1" style="font-size:var(--text-h1); line-height:var(--lh-h1); font-weight:700; letter-spacing:var(--tracking-tight); color:var(--white); margin:0; max-width:22ch; text-wrap:pretty">Need A Website Built, Rebuilt Or Rescued?</h2>
         <p style="font-size:var(--text-lead); line-height:var(--lh-lead); color:var(--text-on-brand-dim); margin:20px 0 0; max-width:44ch">Available for full-time Web Designer and UI/UX roles, plus freelance DUDA CMS website development. From new builds to rebuilds and CMS updates, I'm ready to help bring your project to life.</p>
         <div style="display:flex; flex-direction:column; gap:12px; margin-top:32px; font-size:var(--text-body); color:var(--white)">
-          <div style="display:flex; align-items:center; gap:10px"><span style="width:6px; height:6px; border-radius:999px; background:var(--violet-200)"></span><span>{{ emailAddress }}</span></div>
-          <div style="display:flex; align-items:center; gap:10px"><span style="width:6px; height:6px; border-radius:999px; background:var(--violet-200)"></span><span>Teresa, Rizal · 0936 083 5197</span></div>
+          <div style="display:flex; align-items:center; gap:10px"><span style="display:flex; color:var(--violet-200)"><x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="mail" size="{{ 18 }}" hint-size="18px,18px"></x-import></span><span>{{ emailAddress }}</span></div>
+          <div style="display:flex; align-items:center; gap:10px"><span style="display:flex; color:var(--violet-200)"><x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="phone" size="{{ 18 }}" hint-size="18px,18px"></x-import></span><a href="tel:+639360835197" style="color:var(--white)">0936 083 5197</a></div>
         </div>
       </div>
       <form onSubmit="{{ onSubmit }}" data-r="form" style="background:var(--white); border-radius:20px; box-shadow:var(--shadow-float); padding:32px; display:flex; flex-direction:column; gap:18px">
@@ -322,9 +327,10 @@
   <footer data-r="footer" style="padding:32px 40px; border-top:1px solid var(--border-subtle)">
     <div style="max-width:1200px; margin:0 auto; display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between; font-size:var(--text-sm); color:var(--ink-500)">
       <span>© 2026 Jovelyn Icabales</span>
-      <div style="display:flex; gap:24px">
-        <a href="https://linkedin.com/in/jsicabales" target="_blank" rel="noreferrer">LinkedIn</a>
-        <a href="{{ mailtoHero }}">Email</a>
+      <div style="display:flex; align-items:center; flex-wrap:wrap; gap:12px 20px">
+        <a href="https://linkedin.com/in/jsicabales" target="_blank" rel="noreferrer" style="display:flex; align-items:center; gap:8px"><x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="linkedin" size="{{ 18 }}" hint-size="18px,18px"></x-import><span>LinkedIn</span></a>
+        <a href="{{ mailtoHero }}" style="display:flex; align-items:center; gap:8px"><x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="mail" size="{{ 18 }}" hint-size="18px,18px"></x-import><span>Email</span></a>
+        <a href="tel:+639360835197" style="display:flex; align-items:center; gap:8px"><x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="phone" size="{{ 18 }}" hint-size="18px,18px"></x-import><span>0936 083 5197</span></a>
       </div>
     </div>
   </footer>
@@ -372,6 +378,38 @@
 <script type="text/x-dc" data-dc-script data-props="{&quot;contactEmail&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;icabalessolengjovelyn@gmail.com&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Content&quot;},&quot;showMarquee&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;marqueeSeconds&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:34,&quot;min&quot;:10,&quot;max&quot;:80,&quot;step&quot;:2,&quot;unit&quot;:&quot;s&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Layout&quot;}}">
 const PROJECTS = [
   {
+    id: "akuna-pool",
+    tag: "Pools & Outdoor",
+    title: "Akuna Pool Co.",
+    image: "assets/work/akuna-pool.png",
+    description: "Newcastle pool builders. Quiet, editorial layout — full-bleed water imagery, an icon-only nav, and a low-left type block with the review rating sitting under the intro copy.",
+    link: "http://akunapoolco.webbuilder.localsearch.com.au/"
+  },
+  {
+    id: "ab-quick",
+    tag: "Trades & Maintenance",
+    title: "AB Quick Painting & Maintenance",
+    image: "assets/work/ab-quick.png",
+    description: "Licensed painting and maintenance service in Mareeba, QLD. Dark hero with a utility bar for email, award ribbon and location, plus a split layout pairing the headline with project photography.",
+    link: "https://www.abquickpaintingsevices.com.au/"
+  },
+  {
+    id: "aqua-pools",
+    tag: "Pools & Outdoor",
+    title: "Aqua Pools",
+    image: "assets/work/aqua-pools.png",
+    description: "Fibreglass and shipping-container pools, delivered Australia-wide. Photography-led hero with a light nav, quote and call actions, and a services menu structured for a wide product range.",
+    link: "http://aquapoolsgroup.webbuilder.localsearch.com.au/"
+  },
+  {
+    id: "leading-edge",
+    tag: "IT Services",
+    title: "Leading Edge Computers Forster",
+    image: "assets/work/leading-edge.png",
+    description: "Local computer service shop. Colour-blocked hero with a benefits list, Google review card, and an embedded call-back form that reflows cleanly to a single column on smaller screens.",
+    link: "https://www.leadingedgeforster.com.au/"
+  },
+  {
     id: "trigger-point",
     video: "assets/work/trigger-point.mp4",
     fullPage: "assets/work/trigger-point-full.png",
@@ -392,54 +430,14 @@ const PROJECTS = [
     link: "https://linkedin.com/in/jsicabales"
   },
   {
-    id: "aspire-beauty",
-    tag: "Beauty & Salon",
-    title: "Aspire Beauty",
-    image: "assets/work/aspire-beauty.png",
-    description: "Beauty salon in Wagga Wagga, NSW. Split hero with a curved white panel overlapping the photography, a deep multi-level services menu, and booking plus call actions kept within reach on mobile.",
-    link: "https://www.aspirebeautynails.com.au/"
-  },
-  {
-    id: "leading-edge",
-    tag: "IT Services",
-    title: "Leading Edge Computers Forster",
-    image: "assets/work/leading-edge.png",
-    description: "Local computer service shop. Colour-blocked hero with a benefits list, Google review card, and an embedded call-back form that reflows cleanly to a single column on smaller screens.",
-    link: "https://www.leadingedgeforster.com.au/"
-  },
-  {
-    id: "berrimah",
-    tag: "Automotive",
-    title: "Berrimah Radiator Service",
-    image: "assets/work/berrimah-radiator.png",
-    description: "Radiator specialist in Darwin, NT. Two-tone hero with a floating enquiry form over the workshop photo and a four-up credibility row beneath it — built for fast quoting from a phone.",
-    link: "https://www.berrimahradiators.com.au/"
-  },
-  {
-    id: "aqua-pools",
-    tag: "Pools & Outdoor",
-    title: "Aqua Pools",
-    image: "assets/work/aqua-pools.png",
-    description: "Fibreglass and shipping-container pools, delivered Australia-wide. Photography-led hero with a light nav, quote and call actions, and a services menu structured for a wide product range.",
-    link: "http://aquapoolsgroup.webbuilder.localsearch.com.au/"
-  },
-  {
-    id: "all-season",
-    video: "assets/work/all-season-comfort.mp4",
-    fullPage: "assets/work/all-season-comfort-full.png",
-    tag: "HVAC",
-    title: "All Season Comfort",
-    image: "assets/work/all-season-comfort.png",
-    description: "Family-owned heating and air conditioning company in Theresa, Wisconsin. Dark green build with a product-render hero, rating bar, and a four-column feature strip that stacks into a scannable list on mobile.",
+    id: "bridal-bliss",
+    video: "assets/work/bridal-bliss.mp4",
+    fullPage: "assets/work/bridal-bliss-full.jpg",
+    tag: "Weddings & Events",
+    title: "Bridal Bliss",
+    image: "assets/work/bridal-bliss.png",
+    description: "Wedding planning and event design in Barrie, ON. Centred hero over photography with a floral overlay, dual calls to action, and a five-point trust strip across the fold — all kept legible against a busy background image.",
     link: "https://linkedin.com/in/jsicabales"
-  },
-  {
-    id: "akuna-pool",
-    tag: "Pools & Outdoor",
-    title: "Akuna Pool Co.",
-    image: "assets/work/akuna-pool.png",
-    description: "Newcastle pool builders. Quiet, editorial layout — full-bleed water imagery, an icon-only nav, and a low-left type block with the review rating sitting under the intro copy.",
-    link: "http://akunapoolco.webbuilder.localsearch.com.au/"
   },
   {
     id: "wild-lotus",
@@ -452,14 +450,38 @@ const PROJECTS = [
     link: "https://linkedin.com/in/jsicabales"
   },
   {
-    id: "bridal-bliss",
-    video: "assets/work/bridal-bliss.mp4",
-    fullPage: "assets/work/bridal-bliss-full.jpg",
-    tag: "Weddings & Events",
-    title: "Bridal Bliss",
-    image: "assets/work/bridal-bliss.png",
-    description: "Wedding planning and event design in Barrie, ON. Centred hero over photography with a floral overlay, dual calls to action, and a five-point trust strip across the fold — all kept legible against a busy background image.",
+    id: "all-season",
+    video: "assets/work/all-season-comfort.mp4",
+    fullPage: "assets/work/all-season-comfort-full.png",
+    tag: "HVAC",
+    title: "All Season Comfort",
+    image: "assets/work/all-season-comfort.png",
+    description: "Family-owned heating and air conditioning company in Theresa, Wisconsin. Dark green build with a product-render hero, rating bar, and a four-column feature strip that stacks into a scannable list on mobile.",
     link: "https://linkedin.com/in/jsicabales"
+  },
+  {
+    id: "aspire-beauty",
+    tag: "Beauty & Salon",
+    title: "Aspire Beauty",
+    image: "assets/work/aspire-beauty.png",
+    description: "Beauty salon in Wagga Wagga, NSW. Split hero with a curved white panel overlapping the photography, a deep multi-level services menu, and booking plus call actions kept within reach on mobile.",
+    link: "https://www.aspirebeautynails.com.au/"
+  },
+  {
+    id: "precision-fencing",
+    tag: "Trades & Outdoor",
+    title: "Precision Fencing & Landscaping",
+    image: "assets/work/precision-fencing.png",
+    description: "Fencing and landscaping specialists in Albury-Wodonga, NSW. Photographic hero with a floating pill nav, Google rating block, and a three-up trust strip angled across the fold.",
+    link: "https://www.precisionfencing.com.au/"
+  },
+  {
+    id: "berrimah",
+    tag: "Automotive",
+    title: "Berrimah Radiator Service",
+    image: "assets/work/berrimah-radiator.png",
+    description: "Radiator specialist in Darwin, NT. Two-tone hero with a floating enquiry form over the workshop photo and a four-up credibility row beneath it — built for fast quoting from a phone.",
+    link: "https://www.berrimahradiators.com.au/"
   },
   {
     id: "printed-vinyl",
@@ -468,11 +490,19 @@ const PROJECTS = [
     image: "assets/work/printed-vinyl.png",
     description: "Custom vinyl printing and merchandise in Townsville. The most design-heavy of these builds: patterned dark background, gradient type, and hand-cut product cut-outs positioned around the hero — all custom CSS on top of the CMS.",
     link: "https://www.thatprintedvinylplace.com.au/"
+  },
+  {
+    id: "pkj-designs",
+    tag: "Interiors & Joinery",
+    title: "PKJ Designs",
+    image: "assets/work/pkj-designs.png",
+    description: "Bespoke joinery studio in Wollongong, NSW. Full-bleed interior photography behind a transparent nav, with a rating and location block anchoring the headline and a quiet editorial section beneath.",
+    link: "https://www.pkjdesigns.com.au/"
   }
 ];
 
 class Component extends DCLogic {
-  state = { openId: null, fullId: null, videoId: null, menuOpen: false };
+  state = { openId: null, fullId: null, videoId: null, menuOpen: false, expanded: false };
 
   constructor(props) {
     super(props);
@@ -519,7 +549,16 @@ class Component extends DCLogic {
     const vid = PROJECTS.find((p) => p.id === this.state.videoId);
     const mailto = "mailto:" + this.email() + "?subject=" + encodeURIComponent("Let's work together");
     return {
-      projects: PROJECTS.map((p) => ({ ...p, open: () => this.setState({ openId: p.id }) })),
+      projects: (this.state.expanded ? PROJECTS : PROJECTS.slice(0, 9)).map((p) => ({ ...p, open: () => this.setState({ openId: p.id }) })),
+      expanded: this.state.expanded,
+      moreLabel: this.state.expanded ? "Show Less" : "View More Work",
+      toggleExpanded: () => {
+        const grid = document.getElementById("work-grid");
+        const wasExpanded = this.state.expanded;
+        this.setState({ expanded: !wasExpanded }, () => {
+          if (wasExpanded && grid) window.scrollTo({ top: grid.getBoundingClientRect().top + window.scrollY - 120, behavior: "smooth" });
+        });
+      },
       menuOpen: this.state.menuOpen,
       toggleMenu: () => this.setState(s => ({ menuOpen: !s.menuOpen })),
       closeMenu: () => this.setState({ menuOpen: false }),
