@@ -537,7 +537,7 @@ class Component extends DCLogic {
       emailAddress: this.email(),
       mailtoHero: mailto,
       goMail: () => { window.location.href = mailto; },
-      goResume: () => { window.open("resume.pdf", "_blank"); },
+      goResume: () => { window.open("assets/Jovelyn_Icabales_Resume.pdf", "_blank"); },
       goContact: () => {
         const el = document.getElementById("contact");
         if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: "smooth" });
