@@ -95,6 +95,20 @@
     [data-r="overlay"] { padding: 16px !important; align-items: flex-start !important; overflow-y: auto !important; }
     [role="dialog"] { max-height: none !important; }
   }
+  /* ---------- Small Android phones (<=400px) ---------- */
+  @media (max-width: 400px) {
+    [data-r="sec"] { padding: 48px 16px !important; }
+    [data-r="hero-h1"] { font-size: 30px !important; }
+    [data-r="h1"] { font-size: 25px !important; }
+    [data-r="h2"] { font-size: 23px !important; }
+    [data-r="form"] { padding: 18px !important; }
+    [data-r="footer"] { padding: 24px 16px !important; }
+    [data-r="work-cta"] { padding: 18px !important; }
+    #work-grid { padding: 0 !important; gap: 8px !important; }
+    [data-r="overlay"] { padding: 10px !important; }
+    [role="dialog"] > div { padding: 22px 16px 18px !important; }
+    #contact form input, #contact form textarea { font-size: 16px !important; }
+  }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     [data-marquee] { animation: none !important; }
@@ -112,7 +126,7 @@
         <span style="width:26px; height:2.5px; border-radius:2px; background:var(--violet-600)"></span>
         <span style="width:26px; height:2.5px; border-radius:2px; background:var(--violet-600)"></span>
       </button>
-      <a href="#top" style="display:flex; align-items:center; justify-content:center; flex:1"><img src="assets/logo-trimmed.png" alt="Jovelyn Icabales — Design, Develop, Elevate" style="height:44px; width:auto; display:block; object-fit:contain"></a>
+      <a href="#top" style="display:flex; align-items:center; justify-content:center; flex:1; min-width:0"><img src="assets/logo-trimmed.png" alt="Jovelyn Icabales — Design, Develop, Elevate" style="height:40px; width:auto; max-width:100%; display:block; object-fit:contain"></a>
       <a href="tel:+639360835197" aria-label="Call 0936 083 5197" style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; color:var(--violet-600)">
         <x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="phone" size="{{ 24 }}" hint-size="24px,24px"></x-import>
       </a>
@@ -318,8 +332,14 @@
           <span style="font-size:var(--text-sm); font-weight:500; color:var(--ink-700)">Message</span>
           <textarea name="message" rows="4" required="required" placeholder="What are you working on?" ref="{{ messageRef }}" style="padding:14px 18px; border:1px solid var(--border-input); border-radius:20px; background:var(--surface-input); font-family:var(--font-sans); font-size:var(--text-body); line-height:var(--lh-body); color:var(--ink-900); outline:none; resize:vertical; transition:var(--transition-base)"></textarea>
         </label>
-        <x-import component-from-global-scope="EtechDesignSystem_684170.Button" size="lg" full-width="{{ true }}" type="submit" hint-size="100%,52px">Send Message</x-import>
-        <span style="font-size:var(--text-xs); line-height:var(--lh-xs); color:var(--ink-400); text-align:center">This opens your own email client with the message pre-filled.</span>
+        <x-import component-from-global-scope="EtechDesignSystem_684170.Button" size="lg" full-width="{{ true }}" type="submit" disabled="{{ sending }}" hint-size="100%,52px">{{ sendLabel }}</x-import>
+        <sc-if value="{{ sendOk }}" hint-placeholder-val="{{ false }}">
+          <span style="display:flex; align-items:center; justify-content:center; gap:8px; font-size:var(--text-sm); font-weight:500; color:var(--violet-600); text-align:center">Thanks — your message is on its way. I'll reply soon.</span>
+        </sc-if>
+        <sc-if value="{{ sendError }}" hint-placeholder-val="{{ false }}">
+          <span style="font-size:var(--text-sm); font-weight:500; color:#B4325A; text-align:center">Something went wrong. Email me directly at icabalessolengjovelyn@gmail.com.</span>
+        </sc-if>
+        <span style="font-size:var(--text-xs); line-height:var(--lh-xs); color:var(--ink-400); text-align:center">Ask about any project here, my process, or a site you need built.</span>
       </form>
     </div>
   </section>
@@ -502,7 +522,7 @@ const PROJECTS = [
 ];
 
 class Component extends DCLogic {
-  state = { openId: null, fullId: null, videoId: null, menuOpen: false, expanded: false };
+  state = { openId: null, fullId: null, videoId: null, menuOpen: false, expanded: false, sending: false, sendState: null };
 
   constructor(props) {
     super(props);
@@ -533,14 +553,33 @@ class Component extends DCLogic {
 
   email() { return this.props.contactEmail ?? "icabalessolengjovelyn@gmail.com"; }
 
-  submit = (e) => {
+  submit = async (e) => {
     e.preventDefault();
+    if (this.state.sending) return;
     const name = (this.nameRef.current && this.nameRef.current.value) || "";
     const email = (this.emailRef.current && this.emailRef.current.value) || "";
     const message = (this.messageRef.current && this.messageRef.current.value) || "";
-    const subject = encodeURIComponent("Portfolio enquiry from " + name);
-    const body = encodeURIComponent(message + "\n\n— " + name + " (" + email + ")");
-    window.location.href = "mailto:" + this.email() + "?subject=" + subject + "&body=" + body;
+    this.setState({ sending: true, sendState: null });
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          access_key: "00c57f69-749b-4a0d-a048-d4418d3e0f1a",
+          subject: "Portfolio enquiry from " + name,
+          from_name: name,
+          name: name,
+          email: email,
+          message: message
+        })
+      });
+      const data = await res.json();
+      if (!res.ok || data.success === false) throw new Error(data.message || "Send failed");
+      this.setState({ sending: false, sendState: "ok" });
+      [this.nameRef, this.emailRef, this.messageRef].forEach(r => { if (r.current) r.current.value = ""; });
+    } catch (err) {
+      this.setState({ sending: false, sendState: "error" });
+    }
   };
 
   renderVals() {
@@ -573,6 +612,10 @@ class Component extends DCLogic {
       emailRef: this.emailRef,
       messageRef: this.messageRef,
       onSubmit: this.submit,
+      sendLabel: this.state.sending ? "Sending…" : "Send Message",
+      sending: this.state.sending,
+      sendOk: this.state.sendState === "ok",
+      sendError: this.state.sendState === "error",
       emailAddress: this.email(),
       mailtoHero: mailto,
       goMail: () => { window.location.href = mailto; },
