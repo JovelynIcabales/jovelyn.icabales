@@ -1,0 +1,36 @@
+:root{
+/* ---- Brand violet (primary) ---- */
+--violet-50:#f8f1fe;--violet-100:#f1e4fd;--violet-200:#e2c9fb;--violet-300:#cca4f9;
+--violet-400:#b67ef7;--violet-500:#a855f7;--violet-600:#9333ea;--violet-700:#7521c4;
+/* ---- Brand pink (secondary / gradient tail) ---- */
+--pink-100:#fde7f3;--pink-200:#fbcfe6;--pink-300:#f9a8d4;--pink-400:#f472b6;--pink-500:#ec4e9e;
+/* ---- Neutrals: violet-tinted, never pure grey ---- */
+--ink-900:#2e2a3b;--ink-700:#4a445c;--ink-500:#6e6880;--ink-400:#8c8699;
+--ink-300:#b9b4c4;--ink-200:#e7e1ef;--ink-100:#f3eef8;--ink-050:#f9f3fb;--white:#ffffff;
+/* ---- Semantic text ---- */
+--text-heading:var(--ink-900);--text-body:var(--ink-500);--text-muted:var(--ink-400);
+--text-inverse:var(--white);--text-accent:var(--violet-500);--text-accent-alt:var(--pink-400);
+--text-on-brand:var(--white);--text-on-brand-dim:rgba(255,255,255,.82);
+/* ---- Semantic surfaces ---- */
+--surface-page:var(--white);
+--surface-tint:#f9f3fb;              /* lavender wash behind hero / light sections */
+--surface-card:var(--white);
+--surface-soft:var(--violet-50);      /* light chips, icon wells, ghost buttons */
+--surface-soft-pink:var(--pink-100);
+--surface-input:var(--white);
+/* ---- Borders ---- */
+--border-subtle:#efe7f5;--border-input:var(--ink-200);
+--border-dashed-violet:#c9a4ef;--border-dashed-pink:#f4a4c8;
+--focus-ring:rgba(168,85,247,.35);
+/* ---- Brand gradients ---- */
+--gradient-brand:linear-gradient(90deg,#a855f7 0%,#f472b6 100%); /* @kind color */
+--gradient-brand-diag:linear-gradient(120deg,#a855f7 0%,#f472b6 100%); /* @kind color */
+--gradient-section:linear-gradient(135deg,#b06bf7 0%,#c77af0 46%,#f58cb8 100%); /* @kind color */
+--gradient-soft:linear-gradient(135deg,#efd9ff 0%,#fbd5e8 100%); /* @kind color */
+--gradient-blob:linear-gradient(160deg,#b67ef7 0%,#9333ea 100%); /* @kind color */
+/* ---- Accent rotation for icon wells (alternates violet / pink down a list) ---- */
+--accent-1:var(--violet-500);--accent-1-well:#ede0fe;
+--accent-2:var(--pink-400);--accent-2-well:#fde3ef;
+/* ---- Utility ---- */
+--star:#f5b544;
+}
