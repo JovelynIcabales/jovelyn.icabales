@@ -63,6 +63,7 @@
   /* ---------- Tablet (<=1024px) ---------- */
   @media (max-width: 1024px) {
     [data-r="hero-grid"], [data-r="about-grid"], [data-r="contact-grid"] { grid-template-columns: 1fr !important; gap: 48px !important; }
+    [data-r="exp-grid"] { grid-template-columns: 1fr 1fr !important; gap: 20px !important; }
     [data-r="hero-h1"] { font-size: clamp(40px, 6.4vw, 60px) !important; max-width: 20ch !important; }
     [data-r="unfix"] { width: auto !important; height: auto !important; }
     [data-r="h1"] { font-size: clamp(32px, 4.6vw, 44px) !important; }
@@ -80,6 +81,7 @@
   @media (max-width: 640px) {
     [data-r="hdr"] { padding: 16px 5% !important; }
     [data-r="hero-grid"], [data-r="about-grid"], [data-r="contact-grid"] { gap: 36px !important; }
+    [data-r="exp-grid"] { grid-template-columns: 1fr !important; gap: 20px !important; }
     [data-r="hero-h1"] { font-size: clamp(32px, 8.6vw, 40px) !important; max-width: none !important; }
     [data-r="h1"] { font-size: 28px !important; max-width: none !important; }
     [data-r="h2"] { font-size: 26px !important; }
@@ -166,7 +168,7 @@
         <p style="font-size: var(--text-lead); line-height: var(--lh-lead); color: var(--ink-500); max-width: 52ch; margin: 24px 0 0; text-wrap: pretty; width: 591px; height: 89px" data-r="unfix">CMS and front-end developer with 200+ delivered website projects — new builds, rebuilds, upgrades and reworks in Duda, with custom HTML and CSS where the defaults stop.</p>
         <div style="display:flex; flex-wrap:wrap; gap:14px; margin-top:36px">
           <x-import component-from-global-scope="EtechDesignSystem_684170.Button" size="lg" icon="mail" on-click="{{ goMail }}" hint-size="180px,52px">Contact Me</x-import>
-          <x-import component-from-global-scope="EtechDesignSystem_684170.Button" size="lg" variant="secondary" icon="download" on-click="{{ goResume }}" hint-size="200px,52px">Download Résumé</x-import>
+          <x-import component-from-global-scope="EtechDesignSystem_684170.Button" size="lg" variant="secondary" icon="briefcase" on-click="{{ goWork }}" hint-size="200px,52px">See My Work</x-import>
         </div>
       </div>
       <div data-r="portrait" style="position:relative; aspect-ratio:1/1; max-width:460px; margin:0 auto">
@@ -301,6 +303,53 @@
       </div>
       <div style="display:flex; justify-content:center; margin-top:36px">
         <x-import component-from-global-scope="EtechDesignSystem_684170.Button" variant="secondary" size="md" on-click="{{ toggleExpanded }}" hint-size="190px,44px">{{ moreLabel }}</x-import>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience" data-r="sec" style="position:relative; padding:96px 40px; overflow:hidden">
+    <div aria-hidden="true" style="position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg, transparent, var(--border-subtle) 20%, var(--border-subtle) 80%, transparent); pointer-events:none"></div>
+    <div aria-hidden="true" style="position:absolute; top:64px; left:-90px; width:260px; height:260px; border-radius:999px; border:1.5px dashed var(--border-dashed-violet); opacity:0.4; pointer-events:none"></div>
+    <div aria-hidden="true" style="position:absolute; bottom:-50px; right:6%; width:160px; height:160px; border-radius:48px; background:var(--violet-50); transform:rotate(10deg); pointer-events:none"></div>
+    <div style="position:relative; width:100%; max-width:1200px; margin:0 auto; display:flex; flex-direction:column; align-items:center; text-align:center">
+      <div aria-hidden="true" style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:14px"><span style="width:8px; height:8px; border-radius:999px; background:var(--violet-500)"></span><span style="width:56px; height:1.5px; background:var(--violet-300)"></span><span style="width:8px; height:8px; border-radius:999px; border:1.5px solid var(--violet-300)"></span></div>
+      <h2 data-r="h2" style="font-size:var(--text-h2); line-height:var(--lh-h2); font-weight:700; letter-spacing:var(--tracking-tight); margin:0">Where I've <span style="color:var(--violet-500)">Worked</span></h2>
+      <div data-r="exp-grid" style="width:100%; display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:24px; margin-top:40px; text-align:left; align-items:stretch">
+        <sc-for list="{{ experience }}" as="job" hint-placeholder-count="3">
+          <div style="background:var(--white); border:1px solid var(--border-subtle); border-radius:20px; box-shadow:var(--shadow-card); padding:28px; display:flex; flex-direction:column">
+            <span style="display:inline-flex; align-self:flex-start; align-items:center; height:24px; padding:0 12px; border-radius:999px; background:var(--ink-100); color:var(--ink-700); font-size:var(--text-label); font-weight:600; letter-spacing:var(--tracking-wide); text-transform:uppercase">{{ job.period }}</span>
+            <div style="font-size:19px; line-height:1.3; font-weight:700; color:var(--ink-900); margin-top:16px">{{ job.title }}</div>
+            <div style="font-size:var(--text-sm); font-weight:600; color:var(--violet-500); margin-top:2px">{{ job.company }}</div>
+            <ul style="list-style:none; margin:16px 0 0; padding:0; display:flex; flex-direction:column; gap:10px">
+              <sc-for list="{{ job.points }}" as="pt" hint-placeholder-count="3">
+                <li style="display:flex; align-items:flex-start; gap:10px; font-size:var(--text-sm); line-height:1.6; color:var(--ink-500)">
+                  <span style="width:6px; height:6px; border-radius:999px; background:var(--violet-400); margin-top:8px; flex:none"></span>
+                  <span>{{ pt }}</span>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="tools" data-r="sec" style="position:relative; background:var(--surface-tint); padding:96px 40px; overflow:hidden">
+    <div aria-hidden="true" style="position:absolute; top:-100px; right:-90px; width:320px; height:320px; border-radius:999px; border:1.5px dashed var(--border-dashed-violet); opacity:0.4; pointer-events:none"></div>
+    <div aria-hidden="true" style="position:absolute; bottom:40px; left:-70px; width:200px; height:200px; border-radius:56px; background:var(--violet-50); transform:rotate(12deg); pointer-events:none"></div>
+    <div style="position:relative; width:100%; max-width:900px; margin:0 auto; display:flex; flex-direction:column; align-items:center; text-align:center">
+      <div aria-hidden="true" style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:14px"><span style="width:8px; height:8px; border-radius:999px; background:var(--violet-500)"></span><span style="width:56px; height:1.5px; background:var(--violet-300)"></span><span style="width:8px; height:8px; border-radius:999px; border:1.5px solid var(--violet-300)"></span></div>
+      <h2 data-r="h2" style="font-size:var(--text-h2); line-height:var(--lh-h2); font-weight:700; letter-spacing:var(--tracking-tight); margin:0">Tools <span style="color:var(--violet-500)">I Use</span></h2>
+      <p style="font-size:var(--text-body); line-height:var(--lh-body); color:var(--ink-500); margin:14px 0 0; max-width:52ch">The CMS, languages and workflow I rely on to take a site from brief to shipped.</p>
+      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:14px; margin-top:36px; width:100%">
+        <sc-for list="{{ tools }}" as="t" hint-placeholder-count="9">
+          <span style="display:inline-flex; align-items:center; gap:10px; background:var(--white); border:1px solid var(--border-subtle); border-radius:999px; padding:10px 20px 10px 12px; box-shadow:var(--shadow-card)">
+            <span style="width:32px; height:32px; border-radius:999px; background:var(--violet-100); color:var(--violet-600); display:flex; align-items:center; justify-content:center; flex:none">
+              <x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="{{ t.icon }}" size="{{ 16 }}" hint-size="16px,16px"></x-import>
+            </span>
+            <span style="font-size:var(--text-sm); font-weight:600; color:var(--ink-900); white-space:nowrap">{{ t.label }}</span>
+          </span>
+        </sc-for>
       </div>
     </div>
   </section>
@@ -521,6 +570,51 @@ const PROJECTS = [
   }
 ];
 
+const EXPERIENCE = [
+  {
+    period: "Nov 2024 – Present",
+    title: "Web Designer",
+    company: "eClerx Philippines, Inc.",
+    points: [
+      "Delivered 200+ website projects including new builds, rebuilds, upgrades, and reworks.",
+      "Implemented custom HTML and CSS solutions beyond default CMS components.",
+      "Performed detailed QA checks to reduce revisions and improve approval rates.",
+      "Selected as 1 of 10 out of 60 developers to receive AutoPass status for consistently delivering quality-approved work without internal QC review."
+    ]
+  },
+  {
+    period: "Sept 2024 – Oct 2024",
+    title: "Mobile Frontend Developer Intern",
+    company: "BlastAsia, Inc.",
+    points: [
+      "Enhanced mobile components using Flutter and Dart to improve user experience.",
+      "Incorporated Figma design specifications to maintain design consistency during development.",
+      "Practiced Scrum/Agile methodologies, joining daily stand-ups and sprint planning."
+    ]
+  },
+  {
+    period: "Oct 2024",
+    title: "Quality Assurance Tester Intern",
+    company: "BlastAsia, Inc.",
+    points: [
+      "Collaborated with the QA team on manual project testing, identifying and documenting bugs.",
+      "Conducted manual testing, bug tracking, and reporting to ensure application reliability."
+    ]
+  }
+];
+
+const TOOLS = [
+  { icon: "layout-template", label: "Duda CMS" },
+  { icon: "code-2", label: "HTML5 & CSS3" },
+  { icon: "braces", label: "JavaScript" },
+  { icon: "figma", label: "Figma" },
+  { icon: "smartphone", label: "Flutter & Dart" },
+  { icon: "github", label: "Git & GitHub" },
+  { icon: "search-code", label: "Chrome DevTools" },
+  { icon: "bug", label: "Manual QA Testing" },
+  { icon: "users", label: "Agile / Scrum" }
+];
+
 class Component extends DCLogic {
   state = { openId: null, fullId: null, videoId: null, menuOpen: false, expanded: false, sending: false, sendState: null };
 
@@ -619,11 +713,16 @@ class Component extends DCLogic {
       emailAddress: this.email(),
       mailtoHero: mailto,
       goMail: () => { window.location.href = mailto; },
-      goResume: () => { window.open("assets/Jovelyn_Icabales_Resume.pdf", "_blank"); },
+      goWork: () => {
+        const el = document.getElementById("work");
+        if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: "smooth" });
+      },
       goContact: () => {
         const el = document.getElementById("contact");
         if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: "smooth" });
       },
+      experience: EXPERIENCE,
+      tools: TOOLS,
       modalOpen: !!open,
       modalTag: open ? open.tag : "",
       modalTitle: open ? open.title : "",
