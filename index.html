@@ -94,7 +94,8 @@
     [data-r="stats"] > div { padding: 18px !important; }
     [data-r="form"] { padding: 22px !important; }
     [data-r="exp-grid"] > article { padding: 22px !important; }
-    [data-r="tools-row"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    [data-r="tools-row"] { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+    [data-r="tool-ring"] { display: none !important; }
     [data-r="footer"] { padding: 26px 20px !important; }
     [data-r="footer"] > div { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; }
     [data-r="overlay"] { padding: 16px !important; align-items: flex-start !important; overflow-y: auto !important; }
@@ -342,7 +343,7 @@
       <div data-r="tools-row" style="display:grid; grid-template-columns:repeat(9, minmax(0, 1fr)); gap:10px; width:100%; justify-items:center">
         <sc-for list="{{ tools }}" as="t" hint-placeholder-count="9">
           <div title="{{ t.label }}" aria-label="{{ t.label }}" role="img" onMouseEnter="{{ t.activate }}" onMouseLeave="{{ t.deactivate }}" onClick="{{ t.toggle }}" style="position:relative; width:100%; max-width:112px; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; cursor:pointer">
-            <span aria-hidden="true" style="position:absolute; inset:6%; opacity:{{ t.ringOpacity }}; transition:opacity 180ms var(--ease-base, ease); animation:om-spin 24s linear infinite; pointer-events:none">
+            <span data-r="tool-ring" aria-hidden="true" style="position:absolute; inset:6%; opacity:{{ t.ringOpacity }}; transition:opacity 180ms var(--ease-base, ease); animation:om-spin 24s linear infinite; pointer-events:none">
               <sc-for list="{{ t.chars }}" as="ch" hint-placeholder-count="0">
                 <span style="position:absolute; inset:0; display:flex; justify-content:center; align-items:flex-start; transform:{{ ch.rot }}"><span style="font-size:9px; font-weight:600; line-height:1; color:var(--violet-500)">{{ ch.ch }}</span></span>
               </sc-for>
