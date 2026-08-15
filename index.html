@@ -53,29 +53,27 @@
   [role="dialog"] button:not([aria-label="Close"]):hover {
     box-shadow:0 12px 26px rgba(129,195,215,.55) !important;
   }
-  [data-tool-chip]:hover [data-tool-tag] { opacity:1; transform:translateX(-50%) rotate(0deg) scale(1); }
-  [data-tool-chip]:hover [data-r="tool-icon"] { background:var(--violet-100); color:var(--violet-600); transform:translateY(-3px); }
-  [data-tool-row] { -ms-overflow-style:none; scrollbar-width:none; }
-  [data-tool-row]::-webkit-scrollbar { display:none; }
   [data-hero-mock] { display: none !important; }
   @media (min-width: 1200px) {
     [data-hero-mock="browser"] { display: block !important; }
     [data-hero-mock="chip"] { display: flex !important; }
   }
+  @keyframes om-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
   @keyframes om-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
   /* ---------- Tablet (<=1024px) ---------- */
   @media (max-width: 1024px) {
     [data-r="hero-grid"], [data-r="about-grid"], [data-r="contact-grid"] { grid-template-columns: 1fr !important; gap: 48px !important; }
-    [data-r="exp-grid"] { grid-template-columns: 1fr 1fr !important; gap: 20px !important; }
     [data-r="hero-h1"] { font-size: clamp(40px, 6.4vw, 60px) !important; max-width: 20ch !important; }
     [data-r="unfix"] { width: auto !important; height: auto !important; }
     [data-r="h1"] { font-size: clamp(32px, 4.6vw, 44px) !important; }
     [data-r="h2"] { font-size: clamp(28px, 4vw, 36px) !important; }
     [data-r="portrait"] { display: none !important; }
+    [data-r="tools-row"] { grid-template-columns: repeat(6, minmax(0, 1fr)) !important; }
     [data-r="sec"] { padding-top: 72px !important; padding-bottom: 72px !important; }
     [data-r="sec-work"] { padding: 72px 0 !important; }
     #work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    [data-r="exp-grid"] { grid-template-columns: 1fr !important; gap: 18px !important; }
     [data-r="hdr-inner"] { display: none !important; }
     [data-r="hdr-mobile"] { display: flex !important; }
     [data-r="hdr-menu"] { display: flex !important; }
@@ -85,7 +83,6 @@
   @media (max-width: 640px) {
     [data-r="hdr"] { padding: 16px 5% !important; }
     [data-r="hero-grid"], [data-r="about-grid"], [data-r="contact-grid"] { gap: 36px !important; }
-    [data-r="exp-grid"] { grid-template-columns: 1fr !important; gap: 20px !important; }
     [data-r="hero-h1"] { font-size: clamp(32px, 8.6vw, 40px) !important; max-width: none !important; }
     [data-r="h1"] { font-size: 28px !important; max-width: none !important; }
     [data-r="h2"] { font-size: 26px !important; }
@@ -96,11 +93,12 @@
     [data-r="stats"] { grid-template-columns: 1fr !important; gap: 14px !important; }
     [data-r="stats"] > div { padding: 18px !important; }
     [data-r="form"] { padding: 22px !important; }
+    [data-r="exp-grid"] > article { padding: 22px !important; }
+    [data-r="tools-row"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
     [data-r="footer"] { padding: 26px 20px !important; }
     [data-r="footer"] > div { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; }
     [data-r="overlay"] { padding: 16px !important; align-items: flex-start !important; overflow-y: auto !important; }
     [role="dialog"] { max-height: none !important; }
-    [data-tool-row] { gap: 14px !important; margin-top: 44px !important; }
   }
   /* ---------- Small Android phones (<=400px) ---------- */
   @media (max-width: 400px) {
@@ -117,6 +115,7 @@
     #contact form input, #contact form textarea { font-size: 16px !important; }
   }
   @media (prefers-reduced-motion: reduce) {
+    svg[viewBox="0 0 124 124"] { animation: none !important; }
     html { scroll-behavior: auto; }
     [data-marquee] { animation: none !important; }
     [data-zoom] { transition: none !important; transform: none !important; }
@@ -133,8 +132,8 @@
         <span style="width:26px; height:2.5px; border-radius:2px; background:var(--violet-600)"></span>
         <span style="width:26px; height:2.5px; border-radius:2px; background:var(--violet-600)"></span>
       </button>
-      <a href="#top" style="display:flex; align-items:center; justify-content:center; flex:1; min-width:0"><img src="assets/logo-trimmed.png" alt="Jovelyn Icabales — Design, Develop, Elevate" style="height:40px; width:auto; max-width:100%; display:block; object-fit:contain"></a>
-      <a href="tel:+639360835197" aria-label="Call 0936 083 5197" style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; color:var(--violet-600)">
+      <a href="#top" style="display:flex; align-items:center; justify-content:center; flex:1; min-width:0"><img src="{{ logo }}" alt="Jovelyn Icabales — Design, Develop, Elevate" style="height:40px; width:auto; max-width:100%; display:block; object-fit:contain"></a>
+      <a href="{{ phoneHref }}" aria-label="Call" style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; color:var(--violet-600)">
         <x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="phone" size="{{ 24 }}" hint-size="24px,24px"></x-import>
       </a>
     </div>
@@ -149,7 +148,7 @@
       </div>
     </sc-if>
     <div data-r="hdr-inner" style="width:100%; display:flex; align-items:center; justify-content:space-between; gap:32px">
-      <a href="#top" style="display:flex; align-items:center"><img src="assets/logo-trimmed.png" alt="Jovelyn Icabales — Design, Develop, Elevate" style="height:40px; width:auto; display:block; object-fit:contain"></a>
+      <a href="#top" style="display:flex; align-items:center"><img src="{{ logo }}" alt="Jovelyn Icabales — Design, Develop, Elevate" style="height:40px; width:auto; display:block; object-fit:contain"></a>
       <div data-r="hdr-right" style="display:flex; align-items:center; gap:36px">
         <nav data-r="nav" style="display:flex; align-items:center; gap:28px; font-size:15px; font-weight:500; color:var(--ink-700)">
           <a href="#about">About</a>
@@ -168,12 +167,12 @@
     <div aria-hidden="true" style="position:absolute; bottom:-40px; right:12%; width:260px; height:1.5px; background:linear-gradient(90deg, transparent, var(--violet-300)); pointer-events:none"></div>
     <div data-r="hero-grid" style="position:relative; width:100%; display:grid; grid-template-columns:1.15fr 0.85fr; gap:64px; align-items:center">
       <div>
-        <span style="display:inline-flex; align-items:center; gap:6px; height:24px; padding:0 10px; border-radius:var(--radius-badge, 8px); background:var(--violet-100); color:var(--violet-700); font-size:var(--text-label); font-weight:500">Web Designer · UI/UX</span>
-        <h1 data-r="hero-h1" style="font-size: 70px; line-height: var(--lh-display); font-weight: 700; letter-spacing: var(--tracking-tight); margin: 20px 0 0; max-width: 16ch; text-wrap: pretty; color: #16425B">Building reliable,&nbsp;<span data-r="unfix" style="color: var(--violet-500); width: 548px; height: 144px;">high-quality websites for every client</span></h1>
-        <p style="font-size: var(--text-lead); line-height: var(--lh-lead); color: var(--ink-500); max-width: 52ch; margin: 24px 0 0; text-wrap: pretty; width: 591px; height: 89px" data-r="unfix">CMS and front-end developer with 200+ delivered website projects — new builds, rebuilds, upgrades and reworks in Duda, with custom HTML and CSS where the defaults stop.</p>
+        <span style="display:inline-flex; align-items:center; gap:6px; height:24px; padding:0 10px; border-radius:var(--radius-badge, 8px); background:var(--violet-100); color:var(--violet-700); font-size:var(--text-label); font-weight:500">{{ heroBadge }}</span>
+        <h1 data-r="hero-h1" style="font-size: 70px; line-height: var(--lh-display); font-weight: 700; letter-spacing: var(--tracking-tight); margin: 20px 0 0; max-width: 16ch; text-wrap: pretty; color: #16425B">{{ heroTitleLead }}<span data-r="unfix" style="color: var(--violet-500); width: 548px; height: 144px;">{{ heroTitleAccent }}</span></h1>
+        <p style="font-size: var(--text-lead); line-height: var(--lh-lead); color: var(--ink-500); max-width: 52ch; margin: 24px 0 0; text-wrap: pretty; width: 591px; height: 89px" data-r="unfix">{{ heroLead }}</p>
         <div style="display:flex; flex-wrap:wrap; gap:14px; margin-top:36px">
           <x-import component-from-global-scope="EtechDesignSystem_684170.Button" size="lg" icon="mail" on-click="{{ goMail }}" hint-size="180px,52px">Contact Me</x-import>
-          <x-import component-from-global-scope="EtechDesignSystem_684170.Button" size="lg" variant="secondary" icon="briefcase" on-click="{{ goWork }}" hint-size="200px,52px">See My Work</x-import>
+          <x-import component-from-global-scope="EtechDesignSystem_684170.Button" size="lg" variant="secondary" icon="layout-grid" on-click="{{ goWork }}" hint-size="190px,52px">See My Work</x-import>
         </div>
       </div>
       <div data-r="portrait" style="position:relative; aspect-ratio:1/1; max-width:460px; margin:0 auto">
@@ -181,7 +180,7 @@
         <div aria-hidden="true" style="position:absolute; inset:-14px; border:1.5px dashed var(--border-dashed-violet); border-radius:999px; pointer-events:none"></div>
         <div aria-hidden="true" style="position:absolute; top:6%; left:-6%; width:76px; height:76px; border-radius:999px; background:var(--violet-300); opacity:0.55; pointer-events:none"></div>
         <div aria-hidden="true" style="position:absolute; bottom:8%; right:-7%; width:118px; height:118px; border-radius:36px; background:var(--gradient-brand); opacity:0.2; transform:rotate(16deg); pointer-events:none"></div>
-        <img src="assets/portrait.png" alt="Jovelyn Icabales" style="position:relative; width:100%; height:100%; display:block; object-fit:cover; object-position:center 18%; border-radius:999px; mix-blend-mode:multiply">
+        <img src="{{ portrait }}" alt="Jovelyn Icabales" style="position:relative; width:100%; height:100%; display:block; object-fit:cover; object-position:center 18%; border-radius:999px; mix-blend-mode:multiply">
         <div aria-hidden="true" data-hero-mock="browser" style="position:absolute; top:14%; left:-44%; width:270px; background:var(--white); border-radius:16px; box-shadow:var(--shadow-float); overflow:hidden; pointer-events:none">
           <div style="display:flex; align-items:center; gap:6px; padding:10px 12px; background:var(--violet-50); border-bottom:1px solid var(--border-subtle)">
             <span style="width:8px; height:8px; border-radius:999px; background:var(--violet-300)"></span>
@@ -254,26 +253,16 @@
     <div aria-hidden="true" style="position:absolute; bottom:56px; left:-60px; width:180px; height:180px; border-radius:56px; background:var(--violet-50); transform:rotate(-14deg); pointer-events:none"></div>
     <div data-r="about-grid" style="position:relative; width:100%; max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:start">
       <div>
-        <h2 data-r="h2" style="font-size:var(--text-h2); line-height:var(--lh-h2); font-weight:700; letter-spacing:var(--tracking-tight); margin:0">A Little About <span style="color:var(--violet-500)">How I Work</span></h2>
-        <p style="font-size:var(--text-body); line-height:var(--lh-body); color:var(--ink-500); margin:20px 0 0; max-width:56ch; text-wrap:pretty">Every website I build starts with understanding the client's goals and ends with thorough quality checks. I enjoy transforming designs into responsive, user-friendly websites while maintaining clean structure, consistent styling, and reliable performance across desktop, tablet, and mobile devices.</p>
+        <h2 data-r="h2" style="font-size:var(--text-h2); line-height:var(--lh-h2); font-weight:700; letter-spacing:var(--tracking-tight); margin:0">{{ aboutHeading }} <span style="color:var(--violet-500)">{{ aboutAccent }}</span></h2>
+        <p style="font-size:var(--text-body); line-height:var(--lh-body); color:var(--ink-500); margin:20px 0 0; max-width:56ch; text-wrap:pretty">{{ aboutBody }}</p>
       </div>
       <div data-r="stats" style="display:grid; grid-template-columns:1fr 1fr; grid-auto-rows:1fr; gap:24px">
-        <div style="background:var(--white); border:1px solid var(--border-subtle); border-radius:20px; box-shadow:var(--shadow-card); padding:24px">
-          <div style="font-size: clamp(22px, 2vw, 34px); font-weight: 700; letter-spacing: var(--tracking-tight); color: var(--violet-500); white-space: nowrap">200+</div>
-          <div style="font-size:var(--text-sm); color:var(--ink-500); margin-top:4px">Website Builds, Rebuilds &amp; Client Requests</div>
-        </div>
-        <div style="background:var(--white); border:1px solid var(--border-subtle); border-radius:20px; box-shadow:var(--shadow-card); padding:24px">
-          <div style="font-size: clamp(22px, 2vw, 34px); font-weight: 700; letter-spacing: var(--tracking-tight); color: var(--violet-500); white-space: nowrap">200+</div>
-          <div style="font-size:var(--text-sm); color:var(--ink-500); margin-top:4px">Responsive Websites Delivered</div>
-        </div>
-        <div style="background:var(--white); border:1px solid var(--border-subtle); border-radius:20px; box-shadow:var(--shadow-card); padding:24px">
-          <div style="font-size: clamp(22px, 2vw, 34px); font-weight: 700; letter-spacing: var(--tracking-tight); color: var(--violet-500); white-space: nowrap">QA Focused</div>
-          <div style="font-size:var(--text-sm); color:var(--ink-500); margin-top:4px">Consistent Production Excellence</div>
-        </div>
-        <div style="background:var(--white); border:1px solid var(--border-subtle); border-radius:20px; box-shadow:var(--shadow-card); padding:24px">
-          <div style="font-size:clamp(22px, 2vw, 34px); font-weight:700; letter-spacing:var(--tracking-tight); color:var(--violet-500); white-space:nowrap">Duda CMS</div>
-          <div style="font-size:var(--text-sm); color:var(--ink-500); margin-top:4px">Classic &amp; Editor 2.0 Expertise</div>
-        </div>
+        <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+          <div style="background:var(--white); border:1px solid var(--border-subtle); border-radius:20px; box-shadow:var(--shadow-card); padding:24px">
+            <div style="font-size:clamp(22px, 2vw, 34px); font-weight:700; letter-spacing:var(--tracking-tight); color:var(--violet-500); white-space:nowrap">{{ s.value }}</div>
+            <div style="font-size:var(--text-sm); color:var(--ink-500); margin-top:4px">{{ s.label }}</div>
+          </div>
+        </sc-for>
       </div>
     </div>
   </section>
@@ -312,48 +301,61 @@
     </div>
   </section>
 
-  <section id="experience" data-r="sec" style="position:relative; padding:96px 40px; overflow:hidden">
-    <div aria-hidden="true" style="position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg, transparent, var(--border-subtle) 20%, var(--border-subtle) 80%, transparent); pointer-events:none"></div>
-    <div aria-hidden="true" style="position:absolute; top:64px; left:-90px; width:260px; height:260px; border-radius:999px; border:1.5px dashed var(--border-dashed-violet); opacity:0.4; pointer-events:none"></div>
-    <div aria-hidden="true" style="position:absolute; bottom:-50px; right:6%; width:160px; height:160px; border-radius:48px; background:var(--violet-50); transform:rotate(10deg); pointer-events:none"></div>
-    <div style="position:relative; width:100%; max-width:1200px; margin:0 auto; display:flex; flex-direction:column; align-items:center; text-align:center">
-      <div aria-hidden="true" style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:14px"><span style="width:8px; height:8px; border-radius:999px; background:var(--violet-500)"></span><span style="width:56px; height:1.5px; background:var(--violet-300)"></span><span style="width:8px; height:8px; border-radius:999px; border:1.5px solid var(--violet-300)"></span></div>
-      <h2 data-r="h2" style="font-size:var(--text-h2); line-height:var(--lh-h2); font-weight:700; letter-spacing:var(--tracking-tight); margin:0">Where I've <span style="color:var(--violet-500)">Worked</span></h2>
-      <div data-r="exp-grid" style="width:100%; display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:24px; margin-top:40px; text-align:left; align-items:stretch">
-        <sc-for list="{{ experience }}" as="job" hint-placeholder-count="3">
-          <div style="background:var(--white); border:1px solid var(--border-subtle); border-radius:20px; box-shadow:var(--shadow-card); padding:28px; display:flex; flex-direction:column">
-            <span style="display:inline-flex; align-self:flex-start; align-items:center; height:24px; padding:0 12px; border-radius:999px; background:var(--ink-100); color:var(--ink-700); font-size:var(--text-label); font-weight:600; letter-spacing:var(--tracking-wide); text-transform:uppercase">{{ job.period }}</span>
-            <div style="font-size:19px; line-height:1.3; font-weight:700; color:var(--ink-900); margin-top:16px">{{ job.title }}</div>
-            <div style="font-size:var(--text-sm); font-weight:600; color:var(--violet-500); margin-top:2px">{{ job.company }}</div>
-            <ul style="list-style:none; margin:16px 0 0; padding:0; display:flex; flex-direction:column; gap:10px">
-              <sc-for list="{{ job.points }}" as="pt" hint-placeholder-count="3">
-                <li style="display:flex; align-items:flex-start; gap:10px; font-size:var(--text-sm); line-height:1.6; color:var(--ink-500)">
-                  <span style="width:6px; height:6px; border-radius:999px; background:var(--violet-400); margin-top:8px; flex:none"></span>
-                  <span>{{ pt }}</span>
-                </li>
+  <section id="experience" data-r="sec" style="position:relative; background:var(--surface-tint); padding:96px 40px; overflow:hidden">
+    <div aria-hidden="true" style="position:absolute; top:70px; left:-90px; width:240px; height:240px; border-radius:999px; border:1.5px dashed var(--border-dashed-violet); opacity:0.4; pointer-events:none"></div>
+    <div style="position:relative; max-width:1200px; margin:0 auto">
+      <div style="display:flex; flex-direction:column; align-items:center; text-align:center">
+        <div aria-hidden="true" style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:14px">
+          <span style="width:26px; height:1.5px; background:var(--violet-400)"></span>
+          <span style="font-size:var(--text-label); font-weight:600; letter-spacing:var(--tracking-wide); text-transform:uppercase; color:var(--violet-600)">Experience</span>
+          <span style="width:26px; height:1.5px; background:var(--violet-400)"></span>
+        </div>
+        <h2 data-r="h2" style="font-size:var(--text-h2); line-height:var(--lh-h2); font-weight:700; letter-spacing:var(--tracking-tight); margin:0">Where I've <span style="color:var(--violet-500)">Worked</span></h2>
+      </div>
+      <div data-r="exp-grid" style="display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:24px; margin-top:44px; align-items:stretch">
+        <sc-for list="{{ experience }}" as="x" hint-placeholder-count="3">
+          <article style="display:flex; flex-direction:column; gap:14px; background:var(--white); border:1px solid var(--border-subtle); border-radius:20px; box-shadow:var(--shadow-card); padding:28px; transition:var(--transition-base)" style-hover="transform:translateY(-3px); box-shadow:var(--shadow-card-hover)">
+            <span style="align-self:flex-start; font-size:var(--text-xs); font-weight:600; letter-spacing:var(--tracking-wide); text-transform:uppercase; color:var(--violet-700); background:var(--accent-1-well); border-radius:8px; padding:6px 10px">{{ x.period }}</span>
+            <div>
+              <h3 style="font-size:var(--text-h4); line-height:1.3; font-weight:600; letter-spacing:var(--tracking-tight); margin:0">{{ x.role }}</h3>
+              <p style="font-size:var(--text-sm); font-weight:500; color:var(--violet-600); margin:4px 0 0">{{ x.company }}</p>
+            </div>
+            <ul style="display:flex; flex-direction:column; gap:10px; margin:0; padding:0; list-style:none; font-size:var(--text-sm); line-height:1.6; color:var(--ink-500)">
+              <sc-for list="{{ x.lines }}" as="b" hint-placeholder-count="3">
+                <li style="display:flex; gap:10px"><span aria-hidden="true" style="flex:none; width:6px; height:6px; margin-top:8px; border-radius:999px; background:var(--violet-400)"></span><span>{{ b.text }}</span></li>
               </sc-for>
             </ul>
-          </div>
+          </article>
         </sc-for>
       </div>
     </div>
   </section>
 
-  <section id="tools" data-r="sec" style="position:relative; background:var(--surface-tint); padding:96px 40px; overflow:hidden">
-    <div aria-hidden="true" style="position:absolute; top:-100px; right:-90px; width:320px; height:320px; border-radius:999px; border:1.5px dashed var(--border-dashed-violet); opacity:0.4; pointer-events:none"></div>
-    <div aria-hidden="true" style="position:absolute; bottom:40px; left:-70px; width:200px; height:200px; border-radius:56px; background:var(--violet-50); transform:rotate(12deg); pointer-events:none"></div>
-    <div style="position:relative; width:100%; max-width:900px; margin:0 auto; display:flex; flex-direction:column; align-items:center; text-align:center">
-      <div aria-hidden="true" style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:14px"><span style="width:8px; height:8px; border-radius:999px; background:var(--violet-500)"></span><span style="width:56px; height:1.5px; background:var(--violet-300)"></span><span style="width:8px; height:8px; border-radius:999px; border:1.5px solid var(--violet-300)"></span></div>
-      <h2 data-r="h2" style="font-size:var(--text-h2); line-height:var(--lh-h2); font-weight:700; letter-spacing:var(--tracking-tight); margin:0">Tools <span style="color:var(--violet-500)">I Use</span></h2>
-      <p style="font-size:var(--text-body); line-height:var(--lh-body); color:var(--ink-500); margin:14px 0 0; max-width:52ch">The everyday kit behind the sites above — design, build and hand-off.</p>
-      <div data-tool-row="true" style="display:flex; flex-wrap:nowrap; align-items:flex-start; justify-content:flex-start; gap:22px; margin-top:56px; width:100%; overflow-x:auto; padding:14px 4px 6px">
+  <section data-r="sec" style="position:relative; padding:72px 40px; overflow:hidden">
+    <div style="max-width:1200px; margin:0 auto; display:flex; flex-direction:column; align-items:center; text-align:center">
+      <div aria-hidden="true" style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:14px">
+        <span style="width:26px; height:1.5px; background:var(--violet-400)"></span>
+        <span style="font-size:var(--text-label); font-weight:600; letter-spacing:var(--tracking-wide); text-transform:uppercase; color:var(--violet-600)">Tools I Use</span>
+        <span style="width:26px; height:1.5px; background:var(--violet-400)"></span>
+      </div>
+      <p style="font-size:var(--text-body); line-height:var(--lh-body); color:var(--ink-500); margin:0 0 32px; max-width:52ch; text-wrap:pretty">The everyday kit behind the sites above — design, build and hand-off.</p>
+      <div data-r="tools-row" style="display:grid; grid-template-columns:repeat(9, minmax(0, 1fr)); gap:10px; width:100%; justify-items:center">
         <sc-for list="{{ tools }}" as="t" hint-placeholder-count="9">
-          <span data-tool-chip="true" style="position:relative; display:flex; flex-direction:column; align-items:center; flex:none">
-            <span data-tool-tag="true" style="position:absolute; bottom:calc(100% + 12px); left:50%; transform:translateX(-50%) rotate(-10deg) scale(0.85); opacity:0; transition:opacity var(--duration-base) var(--ease-out), transform var(--duration-base) var(--ease-out); background:var(--violet-600); color:var(--white); font-size:var(--text-xs); font-weight:600; white-space:nowrap; padding:6px 12px; border-radius:999px; box-shadow:var(--shadow-card); pointer-events:none">{{ t.label }}</span>
-            <span data-r="tool-icon" style="width:clamp(48px, 14vw, 64px); height:clamp(48px, 14vw, 64px); border-radius:999px; background:var(--ink-100); color:var(--ink-700); display:flex; align-items:center; justify-content:center; flex:none; transition:var(--transition-base)">
-              <x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="{{ t.icon }}" size="{{ 26 }}" hint-size="26px,26px"></x-import>
+          <div title="{{ t.label }}" aria-label="{{ t.label }}" role="img" onMouseEnter="{{ t.activate }}" onMouseLeave="{{ t.deactivate }}" onClick="{{ t.toggle }}" style="position:relative; width:100%; max-width:112px; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; cursor:pointer">
+            <span aria-hidden="true" style="position:absolute; inset:6%; opacity:{{ t.ringOpacity }}; transition:opacity 180ms var(--ease-base, ease); animation:om-spin 24s linear infinite; pointer-events:none">
+              <sc-for list="{{ t.chars }}" as="ch" hint-placeholder-count="0">
+                <span style="position:absolute; inset:0; display:flex; justify-content:center; align-items:flex-start; transform:{{ ch.rot }}"><span style="font-size:9px; font-weight:600; line-height:1; color:var(--violet-500)">{{ ch.ch }}</span></span>
+              </sc-for>
             </span>
-          </span>
+            <span style="display:flex; align-items:center; justify-content:center; width:66%; height:66%; border-radius:999px; background:var(--accent-1-well); color:var(--violet-700); box-shadow:var(--shadow-xs)">
+              <sc-if value="{{ t.isBrand }}" hint-placeholder-val="{{ false }}">
+                <img src="{{ t.imgSrc }}" alt="" width="26" height="26" style="display:block; width:26px; height:26px">
+              </sc-if>
+              <sc-if value="{{ t.isGlyph }}" hint-placeholder-val="{{ true }}">
+                <x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="{{ t.icon }}" size="{{ 26 }}" hint-size="26px,26px"></x-import>
+              </sc-if>
+            </span>
+          </div>
         </sc-for>
       </div>
     </div>
@@ -370,7 +372,7 @@
         <p style="font-size:var(--text-lead); line-height:var(--lh-lead); color:var(--text-on-brand-dim); margin:20px 0 0; max-width:44ch">Available for full-time Web Designer and UI/UX roles, plus freelance DUDA CMS website development. From new builds to rebuilds and CMS updates, I'm ready to help bring your project to life.</p>
         <div style="display:flex; flex-direction:column; gap:12px; margin-top:32px; font-size:var(--text-body); color:var(--white)">
           <div style="display:flex; align-items:center; gap:10px"><span style="display:flex; color:var(--violet-200)"><x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="mail" size="{{ 18 }}" hint-size="18px,18px"></x-import></span><span>{{ emailAddress }}</span></div>
-          <div style="display:flex; align-items:center; gap:10px"><span style="display:flex; color:var(--violet-200)"><x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="phone" size="{{ 18 }}" hint-size="18px,18px"></x-import></span><a href="tel:+639360835197" style="color:var(--white)">0936 083 5197</a></div>
+          <div style="display:flex; align-items:center; gap:10px"><span style="display:flex; color:var(--violet-200)"><x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="phone" size="{{ 18 }}" hint-size="18px,18px"></x-import></span><a href="{{ phoneHref }}" style="color:var(--white)">{{ phoneText }}</a></div>
         </div>
       </div>
       <form onSubmit="{{ onSubmit }}" data-r="form" style="background:var(--white); border-radius:20px; box-shadow:var(--shadow-float); padding:32px; display:flex; flex-direction:column; gap:18px">
@@ -402,9 +404,9 @@
     <div style="max-width:1200px; margin:0 auto; display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between; font-size:var(--text-sm); color:var(--ink-500)">
       <span>© 2026 Jovelyn Icabales</span>
       <div style="display:flex; align-items:center; flex-wrap:wrap; gap:12px 20px">
-        <a href="https://linkedin.com/in/jsicabales" target="_blank" rel="noreferrer" style="display:flex; align-items:center; gap:8px"><x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="linkedin" size="{{ 18 }}" hint-size="18px,18px"></x-import><span>LinkedIn</span></a>
+        <a href="{{ linkedinHref }}" target="_blank" rel="noreferrer" style="display:flex; align-items:center; gap:8px"><x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="linkedin" size="{{ 18 }}" hint-size="18px,18px"></x-import><span>LinkedIn</span></a>
         <a href="{{ mailtoHero }}" style="display:flex; align-items:center; gap:8px"><x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="mail" size="{{ 18 }}" hint-size="18px,18px"></x-import><span>Email</span></a>
-        <a href="tel:+639360835197" style="display:flex; align-items:center; gap:8px"><x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="phone" size="{{ 18 }}" hint-size="18px,18px"></x-import><span>0936 083 5197</span></a>
+        <a href="{{ phoneHref }}" style="display:flex; align-items:center; gap:8px"><x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="phone" size="{{ 18 }}" hint-size="18px,18px"></x-import><span>{{ phoneText }}</span></a>
       </div>
     </div>
   </footer>
@@ -444,6 +446,104 @@
             <x-import component-from-global-scope="EtechDesignSystem_684170.Button" icon-after="arrow-right" on-click="{{ openLink }}" hint-size="180px,44px">Visit Live Site</x-import>
           </sc-if>
         </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ adminOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:200; background:rgba(22,66,91,0.45); display:flex; justify-content:flex-end">
+      <div style="width:min(560px, 100%); height:100%; background:var(--white); display:flex; flex-direction:column; box-shadow:var(--shadow-float)">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; padding:20px 24px; border-bottom:1px solid var(--border-subtle)">
+          <div>
+            <div style="font-size:var(--text-h4); font-weight:700; letter-spacing:var(--tracking-tight); color:var(--ink-900)">Site Admin</div>
+            <div style="font-size:var(--text-xs); color:var(--ink-400); margin-top:2px">Private to this browser</div>
+          </div>
+          <button type="button" aria-label="Close admin" onClick="{{ closeAdmin }}" style="width:40px; height:40px; border:0; border-radius:999px; background:var(--ink-050); color:var(--ink-700); font-size:20px; line-height:1; cursor:pointer">×</button>
+        </div>
+
+        <sc-if value="{{ adminLocked }}" hint-placeholder-val="{{ true }}">
+          <form onSubmit="{{ submitPass }}" style="display:flex; flex-direction:column; gap:14px; padding:28px 24px">
+            <sc-if value="{{ adminFirstRun }}" hint-placeholder-val="{{ false }}">
+              <p style="font-size:var(--text-sm); line-height:1.6; color:var(--ink-500); margin:0">Set a passcode for this browser. You'll need it each time you open the admin panel here.</p>
+            </sc-if>
+            <label style="display:flex; flex-direction:column; gap:6px; font-size:var(--text-sm); font-weight:500; color:var(--ink-700)">Passcode
+              <input type="password" value="{{ passValue }}" onChange="{{ onPass }}" autofocus="autofocus" style="height:44px; padding:0 14px; border:1px solid var(--border-subtle); border-radius:999px; font:inherit; font-size:15px; color:var(--ink-900); outline:none">
+            </label>
+            <sc-if value="{{ passError }}" hint-placeholder-val="{{ false }}">
+              <span style="font-size:var(--text-sm); color:#B4325A">{{ passError }}</span>
+            </sc-if>
+            <x-import component-from-global-scope="EtechDesignSystem_684170.Button" size="md" type="submit" full-width="{{ true }}" hint-size="100%,44px">Unlock</x-import>
+          </form>
+        </sc-if>
+
+        <sc-if value="{{ adminAuthed }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; flex-wrap:wrap; gap:8px; padding:16px 24px; border-bottom:1px solid var(--border-subtle)">
+            <sc-for list="{{ adminTabs }}" as="t" hint-placeholder-count="7">
+              <button type="button" onClick="{{ t.select }}" style="height:34px; padding:0 14px; border:0; border-radius:999px; background:{{ t.bg }}; color:{{ t.fg }}; font:inherit; font-size:13px; font-weight:600; cursor:pointer">{{ t.label }}</button>
+            </sc-for>
+          </div>
+
+          <div style="flex:1; overflow-y:auto; padding:22px 24px; display:flex; flex-direction:column; gap:18px">
+            <sc-for list="{{ adminFields }}" as="f" hint-placeholder-count="3">
+              <label style="display:flex; flex-direction:column; gap:6px; font-size:var(--text-sm); font-weight:500; color:var(--ink-700)">{{ f.label }}
+                <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}">
+                  <input type="text" value="{{ f.value }}" onChange="{{ f.onChange }}" style="height:42px; padding:0 14px; border:1px solid var(--border-subtle); border-radius:10px; font:inherit; font-size:14px; color:var(--ink-900); outline:none">
+                </sc-if>
+                <sc-if value="{{ f.isArea }}" hint-placeholder-val="{{ false }}">
+                  <textarea rows="4" value="{{ f.value }}" onChange="{{ f.onChange }}" style="padding:12px 14px; border:1px solid var(--border-subtle); border-radius:10px; font:inherit; font-size:14px; line-height:1.6; color:var(--ink-900); outline:none; resize:vertical"></textarea>
+                </sc-if>
+                <sc-if value="{{ f.isImage }}" hint-placeholder-val="{{ false }}">
+                  <input type="text" value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="File path or URL" style="height:42px; padding:0 14px; border:1px solid var(--border-subtle); border-radius:10px; font:inherit; font-size:14px; color:var(--ink-900); outline:none">
+                  <input type="file" accept="{{ f.accept }}" onChange="{{ f.onFile }}" style="font-size:12px; color:var(--ink-500)">
+                </sc-if>
+              </label>
+            </sc-for>
+
+            <sc-for list="{{ adminGroups }}" as="g" hint-placeholder-count="2">
+              <div style="display:flex; flex-direction:column; gap:14px; border:1px solid var(--border-subtle); border-radius:14px; padding:16px; background:var(--ink-050)">
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:10px">
+                  <span style="font-size:var(--text-sm); font-weight:600; color:var(--ink-900)">{{ g.title }}</span>
+                  <span style="display:flex; gap:6px">
+                    <button type="button" aria-label="Move up" onClick="{{ g.moveUp }}" style="width:30px; height:30px; border:1px solid var(--border-subtle); border-radius:8px; background:var(--white); color:var(--ink-700); cursor:pointer">↑</button>
+                    <button type="button" aria-label="Move down" onClick="{{ g.moveDown }}" style="width:30px; height:30px; border:1px solid var(--border-subtle); border-radius:8px; background:var(--white); color:var(--ink-700); cursor:pointer">↓</button>
+                    <button type="button" aria-label="Delete" onClick="{{ g.remove }}" style="width:30px; height:30px; border:1px solid var(--border-subtle); border-radius:8px; background:var(--white); color:#B4325A; cursor:pointer">×</button>
+                  </span>
+                </div>
+                <sc-for list="{{ g.fields }}" as="f" hint-placeholder-count="3">
+                  <label style="display:flex; flex-direction:column; gap:6px; font-size:var(--text-xs); font-weight:500; color:var(--ink-700)">{{ f.label }}
+                    <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}">
+                      <input type="text" value="{{ f.value }}" onChange="{{ f.onChange }}" style="height:38px; padding:0 12px; border:1px solid var(--border-subtle); border-radius:10px; background:var(--white); font:inherit; font-size:14px; color:var(--ink-900); outline:none">
+                    </sc-if>
+                    <sc-if value="{{ f.isArea }}" hint-placeholder-val="{{ false }}">
+                      <textarea rows="4" value="{{ f.value }}" onChange="{{ f.onChange }}" style="padding:10px 12px; border:1px solid var(--border-subtle); border-radius:10px; background:var(--white); font:inherit; font-size:14px; line-height:1.6; color:var(--ink-900); outline:none; resize:vertical"></textarea>
+                    </sc-if>
+                    <sc-if value="{{ f.isImage }}" hint-placeholder-val="{{ false }}">
+                      <input type="text" value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="File path or URL" style="height:38px; padding:0 12px; border:1px solid var(--border-subtle); border-radius:10px; background:var(--white); font:inherit; font-size:14px; color:var(--ink-900); outline:none">
+                      <input type="file" accept="{{ f.accept }}" onChange="{{ f.onFile }}" style="font-size:12px; color:var(--ink-500)">
+                    </sc-if>
+                  </label>
+                </sc-for>
+              </div>
+            </sc-for>
+
+            <sc-if value="{{ adminCanAdd }}" hint-placeholder-val="{{ false }}">
+              <button type="button" onClick="{{ adminAdd }}" style="align-self:flex-start; height:40px; padding:0 18px; border:1px dashed var(--violet-400); border-radius:999px; background:var(--white); color:var(--violet-600); font:inherit; font-size:14px; font-weight:600; cursor:pointer">+ {{ adminAddLabel }}</button>
+            </sc-if>
+          </div>
+
+          <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:16px 24px; border-top:1px solid var(--border-subtle)">
+            <x-import component-from-global-scope="EtechDesignSystem_684170.Button" size="md" on-click="{{ saveContent }}" hint-size="120px,42px">Save</x-import>
+            <button type="button" onClick="{{ exportContent }}" style="height:42px; padding:0 16px; border:1px solid var(--border-subtle); border-radius:999px; background:var(--white); color:var(--ink-700); font:inherit; font-size:14px; cursor:pointer">Export</button>
+            <label style="height:42px; display:flex; align-items:center; padding:0 16px; border:1px solid var(--border-subtle); border-radius:999px; color:var(--ink-700); font-size:14px; cursor:pointer">Import
+              <input type="file" accept="application/json" onChange="{{ importContent }}" style="display:none">
+            </label>
+            <button type="button" onClick="{{ resetContent }}" style="height:42px; padding:0 16px; border:1px solid var(--border-subtle); border-radius:999px; background:var(--white); color:#B4325A; font:inherit; font-size:14px; cursor:pointer">Reset</button>
+            <button type="button" onClick="{{ changePass }}" style="height:42px; padding:0 16px; border:1px solid var(--border-subtle); border-radius:999px; background:var(--white); color:var(--ink-700); font:inherit; font-size:14px; cursor:pointer">Passcode</button>
+            <sc-if value="{{ savedNote }}" hint-placeholder-val="{{ false }}">
+              <span style="font-size:var(--text-sm); font-weight:500; color:var(--violet-600)">Saved</span>
+            </sc-if>
+          </div>
+        </sc-if>
       </div>
     </div>
   </sc-if>
@@ -575,53 +675,86 @@ const PROJECTS = [
   }
 ];
 
-const EXPERIENCE = [
-  {
-    period: "Nov 2024 – Present",
-    title: "Web Designer",
-    company: "eClerx Philippines, Inc.",
-    points: [
+
+const CONTENT_KEY = "jov-portfolio-content-v1";
+const PASS_KEY = "jov-portfolio-admin-pass-v2";
+
+const DEFAULT_CONTENT = {
+  brand: { logo: "assets/logo-trimmed.png", portrait: "assets/portrait.png" },
+  hero: {
+    badge: "Web Designer \u00B7 UI/UX",
+    titleLead: "Building reliable,\u00A0",
+    titleAccent: "high-quality websites for every client",
+    lead: "CMS and front-end developer with 200+ delivered website projects \u2014 new builds, rebuilds, upgrades and reworks in Duda, with custom HTML and CSS where the defaults stop."
+  },
+  about: {
+    heading: "A Little About",
+    accent: "How I Work",
+    body: "Every website I build starts with understanding the client's goals and ends with thorough quality checks. I enjoy transforming designs into responsive, user-friendly websites while maintaining clean structure, consistent styling, and reliable performance across desktop, tablet, and mobile devices.",
+    stats: [
+      { value: "200+", label: "Website Builds, Rebuilds & Client Requests" },
+      { value: "200+", label: "Responsive Websites Delivered" },
+      { value: "QA Focused", label: "Consistent Production Excellence" },
+      { value: "Duda CMS", label: "Classic & Editor 2.0 Expertise" }
+    ]
+  },
+  experience: [
+    { period: "Nov 2024 \u2013 Present", role: "Web Designer", company: "eClerx Philippines, Inc.", bullets: [
       "Delivered 200+ website projects including new builds, rebuilds, upgrades, and reworks.",
       "Implemented custom HTML and CSS solutions beyond default CMS components.",
       "Performed detailed QA checks to reduce revisions and improve approval rates.",
       "Selected as 1 of 10 out of 60 developers to receive AutoPass status for consistently delivering quality-approved work without internal QC review."
-    ]
-  },
-  {
-    period: "Sept 2024 – Oct 2024",
-    title: "Mobile Frontend Developer Intern",
-    company: "BlastAsia, Inc.",
-    points: [
+    ]},
+    { period: "Sept 2024 \u2013 Oct 2024", role: "Mobile Frontend Developer Intern", company: "BlastAsia, Inc.", bullets: [
       "Enhanced mobile components using Flutter and Dart to improve user experience.",
       "Incorporated Figma design specifications to maintain design consistency during development.",
       "Practiced Scrum/Agile methodologies, joining daily stand-ups and sprint planning."
-    ]
-  },
-  {
-    period: "Oct 2024",
-    title: "Quality Assurance Tester Intern",
-    company: "BlastAsia, Inc.",
-    points: [
+    ]},
+    { period: "Oct 2024 – Nov 2024", role: "Quality Assurance Tester Intern", company: "BlastAsia, Inc.", bullets: [
       "Collaborated with the QA team on manual project testing, identifying and documenting bugs.",
       "Conducted manual testing, bug tracking, and reporting to ensure application reliability."
-    ]
-  }
-];
+    ]}
+  ],
+  tools: [
+    { label: "Duda CMS", slug: "", icon: "layout-template" },
+    { label: "Figma", slug: "figma", icon: "" },
+    { label: "Canva", slug: "", icon: "palette" },
+    { label: "Photoshop", slug: "", icon: "image" },
+    { label: "HTML", slug: "html5", icon: "" },
+    { label: "CSS", slug: "css", icon: "" },
+    { label: "Responsive", slug: "", icon: "monitor-smartphone" },
+    { label: "Lovable", slug: "", icon: "heart" },
+    { label: "Claude", slug: "claude", icon: "" }
+  ],
+  contact: {
+    email: "icabalessolengjovelyn@gmail.com",
+    phone: "0936 083 5197",
+    phoneHref: "tel:+639360835197",
+    linkedin: "https://linkedin.com/in/jsicabales"
+  },
+  projects: PROJECTS
+};
 
-const TOOLS = [
-  { icon: "layout-template", label: "Duda CMS" },
-  { icon: "code-2", label: "HTML5 & CSS3" },
-  { icon: "braces", label: "JavaScript" },
-  { icon: "figma", label: "Figma" },
-  { icon: "smartphone", label: "Flutter & Dart" },
-  { icon: "github", label: "Git & GitHub" },
-  { icon: "search-code", label: "Chrome DevTools" },
-  { icon: "bug", label: "Manual QA Testing" },
-  { icon: "users", label: "Agile / Scrum" }
-];
+function deepCopy(v) { return JSON.parse(JSON.stringify(v)); }
+function loadContent() {
+  const base = deepCopy(DEFAULT_CONTENT);
+  try {
+    const raw = localStorage.getItem(CONTENT_KEY);
+    if (!raw) return base;
+    const saved = JSON.parse(raw);
+    return Object.assign(base, saved);
+  } catch (e) { return base; }
+}
+function ringChars(label) {
+  const unit = String(label || "").toUpperCase() + " \u00B7 ";
+  const k = Math.max(1, Math.round(30 / unit.length));
+  const s = unit.repeat(k);
+  const step = 360 / s.length;
+  return s.split("").map((ch, i) => ({ ch: ch === " " ? "\u00A0" : ch, rot: "rotate(" + (i * step).toFixed(2) + "deg)" }));
+}
 
 class Component extends DCLogic {
-  state = { openId: null, fullId: null, videoId: null, menuOpen: false, expanded: false, sending: false, sendState: null };
+  state = { openId: null, fullId: null, videoId: null, menuOpen: false, expanded: false, sending: false, sendState: null, activeTool: null, content: loadContent(), adminOpen: false, adminAuthed: false, adminTab: "Hero", draft: null, pass: "", passError: "", saved: false };
 
   constructor(props) {
     super(props);
@@ -634,6 +767,9 @@ class Component extends DCLogic {
 
   componentDidMount() {
     document.addEventListener("keydown", this.onKey);
+    document.addEventListener("keydown", this.onAdminKey);
+    window.addEventListener("hashchange", this.checkHash);
+    this.checkHash();
     this.applySpeed();
   }
   componentDidUpdate() {
@@ -642,6 +778,8 @@ class Component extends DCLogic {
   }
   componentWillUnmount() {
     document.removeEventListener("keydown", this.onKey);
+    document.removeEventListener("keydown", this.onAdminKey);
+    window.removeEventListener("hashchange", this.checkHash);
     document.body.style.overflow = "";
   }
 
@@ -681,29 +819,261 @@ class Component extends DCLogic {
     }
   };
 
-  renderVals() {
-    const open = PROJECTS.find((p) => p.id === this.state.openId);
-    const full = PROJECTS.find((p) => p.id === this.state.fullId);
-    const vid = PROJECTS.find((p) => p.id === this.state.videoId);
-    const mailto = "mailto:" + this.email() + "?subject=" + encodeURIComponent("Let's work together");
+  checkHash = () => {
+    if (window.location.hash.toLowerCase() === "#admin") this.openAdmin();
+  };
+  onAdminKey = (e) => {
+    if (e.altKey && e.shiftKey && (e.key === "A" || e.key === "a")) { e.preventDefault(); this.openAdmin(); }
+  };
+  openAdmin = () => {
+    const stored = localStorage.getItem(PASS_KEY);
+    this.setState({ adminOpen: true, adminAuthed: !stored ? false : this.state.adminAuthed, draft: deepCopy(this.state.content) });
+  };
+  closeAdmin = () => {
+    if (window.location.hash.toLowerCase() === "#admin") history.replaceState(null, "", window.location.pathname + window.location.search);
+    this.setState({ adminOpen: false, draft: null, saved: false, pass: "", passError: "" });
+  };
+  submitPass = (e) => {
+    e.preventDefault();
+    const stored = localStorage.getItem(PASS_KEY);
+    const entered = (this.state.pass || "").trim();
+    if (!entered) { this.setState({ passError: "Enter a passcode." }); return; }
+    if (!stored) { localStorage.setItem(PASS_KEY, entered); this.setState({ adminAuthed: true, pass: "", passError: "" }); return; }
+    if (entered === stored) this.setState({ adminAuthed: true, pass: "", passError: "" });
+    else this.setState({ passError: "That passcode doesn't match." });
+  };
+  changePass = () => {
+    const stored = localStorage.getItem(PASS_KEY) || "";
+    const current = window.prompt("Current passcode");
+    if (current === null) return;
+    if (current.trim() !== stored) { window.alert("That passcode doesn't match."); return; }
+    const next = window.prompt("New passcode");
+    if (next === null) return;
+    if (!next.trim()) { window.alert("Passcode can't be empty."); return; }
+    localStorage.setItem(PASS_KEY, next.trim());
+    window.alert("Passcode updated.");
+  };
+  upd = (fn) => {
+    const next = deepCopy(this.state.draft || this.state.content);
+    fn(next);
+    this.setState({ draft: next, saved: false });
+  };
+  saveContent = () => {
+    const next = this.state.draft || this.state.content;
+    try { localStorage.setItem(CONTENT_KEY, JSON.stringify(next)); } catch (err) {
+      this.setState({ passError: "Storage full — use smaller images or link them by URL." });
+      return;
+    }
+    this.setState({ content: deepCopy(next), saved: true });
+  };
+  resetContent = () => {
+    localStorage.removeItem(CONTENT_KEY);
+    const base = deepCopy(DEFAULT_CONTENT);
+    this.setState({ content: base, draft: deepCopy(base), saved: true });
+  };
+  exportContent = () => {
+    const data = JSON.stringify(this.state.draft || this.state.content, null, 2);
+    const url = URL.createObjectURL(new Blob([data], { type: "application/json" }));
+    const a = document.createElement("a");
+    a.href = url; a.download = "portfolio-content.json"; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+  importContent = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const r = new FileReader();
+    r.onload = () => { try { this.setState({ draft: JSON.parse(r.result), saved: false }); } catch (err) { this.setState({ passError: "That file isn't valid JSON." }); } };
+    r.readAsText(file);
+  };
+
+  field(label, get, set, type, accept) {
+    const d = this.state.draft || this.state.content;
     return {
-      projects: (this.state.expanded ? PROJECTS : PROJECTS.slice(0, 9)).map((p) => ({ ...p, open: () => this.setState({ openId: p.id }) })),
+      label: label,
+      value: get(d) == null ? "" : get(d),
+      isText: type !== "area" && type !== "image",
+      isArea: type === "area",
+      isImage: type === "image",
+      accept: accept || "image/*",
+      onChange: (e) => this.upd(n => set(n, e.target.value)),
+      onFile: (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const r = new FileReader();
+        r.onload = () => this.upd(n => set(n, r.result));
+        r.readAsDataURL(file);
+      }
+    };
+  }
+
+  listControls(key, index, blank) {
+    return {
+      moveUp: () => this.upd(n => { const a = n[key]; if (index > 0) { const t = a[index - 1]; a[index - 1] = a[index]; a[index] = t; } }),
+      moveDown: () => this.upd(n => { const a = n[key]; if (index < a.length - 1) { const t = a[index + 1]; a[index + 1] = a[index]; a[index] = t; } }),
+      remove: () => this.upd(n => { n[key].splice(index, 1); })
+    };
+  }
+
+  adminModel() {
+    const tab = this.state.adminTab;
+    const F = this.field.bind(this);
+    if (tab === "Hero") return { fields: [
+      F("Badge", d => d.hero.badge, (n, v) => n.hero.badge = v),
+      F("Heading (first part)", d => d.hero.titleLead, (n, v) => n.hero.titleLead = v),
+      F("Heading (highlighted part)", d => d.hero.titleAccent, (n, v) => n.hero.titleAccent = v),
+      F("Subheading", d => d.hero.lead, (n, v) => n.hero.lead = v, "area")
+    ], groups: [] };
+    if (tab === "About") return {
+      fields: [
+        F("Heading", d => d.about.heading, (n, v) => n.about.heading = v),
+        F("Heading (highlighted)", d => d.about.accent, (n, v) => n.about.accent = v),
+        F("Paragraph", d => d.about.body, (n, v) => n.about.body = v, "area")
+      ],
+      groups: ((this.state.draft || this.state.content).about.stats || []).map((s, i) => ({
+        title: "Stat " + (i + 1),
+        fields: [
+          F("Value", d => d.about.stats[i].value, (n, v) => n.about.stats[i].value = v),
+          F("Label", d => d.about.stats[i].label, (n, v) => n.about.stats[i].label = v)
+        ],
+        moveUp: () => this.upd(n => { const a = n.about.stats; if (i > 0) { const t = a[i-1]; a[i-1] = a[i]; a[i] = t; } }),
+        moveDown: () => this.upd(n => { const a = n.about.stats; if (i < a.length - 1) { const t = a[i+1]; a[i+1] = a[i]; a[i] = t; } }),
+        remove: () => this.upd(n => { n.about.stats.splice(i, 1); })
+      })),
+      addLabel: "Add stat",
+      add: () => this.upd(n => { n.about.stats.push({ value: "New", label: "Describe it" }); })
+    };
+    if (tab === "Experience") return {
+      fields: [],
+      groups: ((this.state.draft || this.state.content).experience || []).map((x, i) => Object.assign({
+        title: x.role || "Role " + (i + 1),
+        fields: [
+          F("Dates", d => d.experience[i].period, (n, v) => n.experience[i].period = v),
+          F("Role", d => d.experience[i].role, (n, v) => n.experience[i].role = v),
+          F("Company", d => d.experience[i].company, (n, v) => n.experience[i].company = v),
+          F("Bullets (one per line)", d => (d.experience[i].bullets || []).join("\n"), (n, v) => n.experience[i].bullets = v.split("\n").filter(t => t.trim()), "area")
+        ]
+      }, this.listControls("experience", i))),
+      addLabel: "Add role",
+      add: () => this.upd(n => { n.experience.push({ period: "2026", role: "New Role", company: "Company", bullets: ["What you did."] }); })
+    };
+    if (tab === "Tools") return {
+      fields: [],
+      groups: ((this.state.draft || this.state.content).tools || []).map((t, i) => Object.assign({
+        title: t.label || "Tool " + (i + 1),
+        fields: [
+          F("Name", d => d.tools[i].label, (n, v) => n.tools[i].label = v),
+          F("Brand logo slug (simpleicons.org, optional)", d => d.tools[i].slug, (n, v) => n.tools[i].slug = v),
+          F("Fallback icon name (lucide)", d => d.tools[i].icon, (n, v) => n.tools[i].icon = v)
+        ]
+      }, this.listControls("tools", i))),
+      addLabel: "Add tool",
+      add: () => this.upd(n => { n.tools.push({ label: "New Tool", slug: "", icon: "circle" }); })
+    };
+    if (tab === "Projects") return {
+      fields: [],
+      groups: ((this.state.draft || this.state.content).projects || []).map((p, i) => Object.assign({
+        title: p.title || "Project " + (i + 1),
+        fields: [
+          F("Title", d => d.projects[i].title, (n, v) => n.projects[i].title = v),
+          F("Category", d => d.projects[i].tag, (n, v) => n.projects[i].tag = v),
+          F("Description", d => d.projects[i].description, (n, v) => n.projects[i].description = v, "area"),
+          F("Live site URL", d => d.projects[i].link, (n, v) => n.projects[i].link = v),
+          F("Thumbnail", d => d.projects[i].image, (n, v) => n.projects[i].image = v, "image"),
+          F("Full-page image", d => d.projects[i].fullPage, (n, v) => n.projects[i].fullPage = v, "image"),
+          F("Video", d => d.projects[i].video, (n, v) => n.projects[i].video = v, "image", "video/*")
+        ]
+      }, this.listControls("projects", i))),
+      addLabel: "Add project",
+      add: () => this.upd(n => { n.projects.unshift({ id: "p" + Date.now(), tag: "Category", title: "New Project", image: "", description: "", link: "" }); })
+    };
+    if (tab === "Contact") return { fields: [
+      F("Email", d => d.contact.email, (n, v) => n.contact.email = v),
+      F("Phone (shown)", d => d.contact.phone, (n, v) => n.contact.phone = v),
+      F("Phone link (tel:…)", d => d.contact.phoneHref, (n, v) => n.contact.phoneHref = v),
+      F("LinkedIn URL", d => d.contact.linkedin, (n, v) => n.contact.linkedin = v)
+    ], groups: [] };
+    return { fields: [
+      F("Logo", d => d.brand.logo, (n, v) => n.brand.logo = v, "image"),
+      F("Photo", d => d.brand.portrait, (n, v) => n.brand.portrait = v, "image")
+    ], groups: [] };
+  }
+
+  renderVals() {
+    const c = this.state.content;
+    const all = c.projects || [];
+    const open = all.find((p) => p.id === this.state.openId);
+    const full = all.find((p) => p.id === this.state.fullId);
+    const vid = all.find((p) => p.id === this.state.videoId);
+    const mailto = "mailto:" + (c.contact.email || this.email()) + "?subject=" + encodeURIComponent("Let's work together");
+    const model = this.adminModel();
+    const tabs = ["Hero", "About", "Experience", "Tools", "Projects", "Contact", "Brand"];
+    return {
+      logo: c.brand.logo,
+      portrait: c.brand.portrait,
+      heroBadge: c.hero.badge,
+      heroTitleLead: c.hero.titleLead,
+      heroTitleAccent: c.hero.titleAccent,
+      heroLead: c.hero.lead,
+      aboutHeading: c.about.heading,
+      aboutAccent: c.about.accent,
+      aboutBody: c.about.body,
+      stats: c.about.stats || [],
+      experience: (c.experience || []).map((x) => ({ ...x, lines: (x.bullets || []).map((b) => ({ text: b })) })),
+      tools: (c.tools || []).map((t, i) => ({
+        label: t.label,
+        isBrand: !!t.slug,
+        isGlyph: !t.slug,
+        imgSrc: t.slug ? "https://cdn.simpleicons.org/" + t.slug + "/16425B" : "",
+        icon: t.icon || "circle",
+        chars: ringChars(t.label),
+        ringOpacity: this.state.activeTool === i ? 1 : 0,
+        activate: () => this.setState({ activeTool: i }),
+        deactivate: () => this.setState((s) => (s.activeTool === i ? { activeTool: null } : null)),
+        toggle: () => this.setState((s) => ({ activeTool: s.activeTool === i ? null : i }))
+      })),
+      phoneText: c.contact.phone,
+      phoneHref: c.contact.phoneHref,
+      linkedinHref: c.contact.linkedin,
+      adminOpen: this.state.adminOpen,
+      adminAuthed: this.state.adminOpen && this.state.adminAuthed,
+      adminLocked: this.state.adminOpen && !this.state.adminAuthed,
+      adminFirstRun: !localStorage.getItem(PASS_KEY),
+      passValue: this.state.pass,
+      passError: this.state.passError,
+      onPass: (e) => this.setState({ pass: e.target.value }),
+      submitPass: this.submitPass,
+      closeAdmin: this.closeAdmin,
+      adminTabs: tabs.map((t) => ({ label: t, active: this.state.adminTab === t, bg: this.state.adminTab === t ? "var(--violet-600)" : "var(--ink-050)", fg: this.state.adminTab === t ? "#FFFFFF" : "var(--ink-700)", select: () => this.setState({ adminTab: t }) })),
+      adminFields: model.fields,
+      adminGroups: model.groups,
+      adminHasGroups: (model.groups || []).length > 0,
+      adminAddLabel: model.addLabel || "",
+      adminCanAdd: !!model.add,
+      adminAdd: model.add || (() => {}),
+      saveContent: this.saveContent,
+      changePass: this.changePass,
+      resetContent: this.resetContent,
+      exportContent: this.exportContent,
+      importContent: this.importContent,
+      savedNote: this.state.saved,
+      projects: (this.state.expanded ? all : all.slice(0, 9)).map((p) => ({ ...p, open: () => this.setState({ openId: p.id }) })),
       expanded: this.state.expanded,
       moreLabel: this.state.expanded ? "Show Less" : "View More Work",
       toggleExpanded: () => {
         const grid = document.getElementById("work-grid");
         const wasExpanded = this.state.expanded;
         this.setState({ expanded: !wasExpanded }, () => {
-          if (wasExpanded && grid) window.scrollTo({ top: grid.getBoundingClientRect().top + window.scrollY - 120, behavior: "smooth" });
+          if (wasExpanded && grid) document.documentElement.scrollTop = grid.getBoundingClientRect().top + window.scrollY - 120;
         });
       },
       menuOpen: this.state.menuOpen,
       toggleMenu: () => this.setState(s => ({ menuOpen: !s.menuOpen })),
       closeMenu: () => this.setState({ menuOpen: false }),
       menuContact: () => {
-        this.setState({ menuOpen: false });
-        const el = document.getElementById("contact");
-        if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: "smooth" });
+        this.setState({ menuOpen: false }, () => {
+          const el = document.getElementById("contact");
+          if (el) document.documentElement.scrollTop = el.getBoundingClientRect().top + window.scrollY;
+        });
       },
       showMarquee: this.props.showMarquee ?? true,
       marqueeRef: this.marqueeRef,
@@ -715,19 +1085,17 @@ class Component extends DCLogic {
       sending: this.state.sending,
       sendOk: this.state.sendState === "ok",
       sendError: this.state.sendState === "error",
-      emailAddress: this.email(),
+      emailAddress: c.contact.email || this.email(),
       mailtoHero: mailto,
       goMail: () => { window.location.href = mailto; },
       goWork: () => {
         const el = document.getElementById("work");
-        if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: "smooth" });
+        if (el) document.documentElement.scrollTop = el.getBoundingClientRect().top + window.scrollY;
       },
       goContact: () => {
         const el = document.getElementById("contact");
-        if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: "smooth" });
+        if (el) document.documentElement.scrollTop = el.getBoundingClientRect().top + window.scrollY;
       },
-      experience: EXPERIENCE,
-      tools: TOOLS,
       modalOpen: !!open,
       modalTag: open ? open.tag : "",
       modalTitle: open ? open.title : "",
