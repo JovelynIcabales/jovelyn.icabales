@@ -53,6 +53,10 @@
   [role="dialog"] button:not([aria-label="Close"]):hover {
     box-shadow:0 12px 26px rgba(129,195,215,.55) !important;
   }
+  [data-tool-chip]:hover [data-tool-tag] { opacity:1; transform:translateX(-50%) rotate(0deg) scale(1); }
+  [data-tool-chip]:hover [data-r="tool-icon"] { background:var(--violet-100); color:var(--violet-600); transform:translateY(-3px); }
+  [data-tool-row] { -ms-overflow-style:none; scrollbar-width:none; }
+  [data-tool-row]::-webkit-scrollbar { display:none; }
   [data-hero-mock] { display: none !important; }
   @media (min-width: 1200px) {
     [data-hero-mock="browser"] { display: block !important; }
@@ -96,6 +100,7 @@
     [data-r="footer"] > div { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; }
     [data-r="overlay"] { padding: 16px !important; align-items: flex-start !important; overflow-y: auto !important; }
     [role="dialog"] { max-height: none !important; }
+    [data-tool-row] { gap: 14px !important; margin-top: 44px !important; }
   }
   /* ---------- Small Android phones (<=400px) ---------- */
   @media (max-width: 400px) {
@@ -340,14 +345,14 @@
     <div style="position:relative; width:100%; max-width:900px; margin:0 auto; display:flex; flex-direction:column; align-items:center; text-align:center">
       <div aria-hidden="true" style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:14px"><span style="width:8px; height:8px; border-radius:999px; background:var(--violet-500)"></span><span style="width:56px; height:1.5px; background:var(--violet-300)"></span><span style="width:8px; height:8px; border-radius:999px; border:1.5px solid var(--violet-300)"></span></div>
       <h2 data-r="h2" style="font-size:var(--text-h2); line-height:var(--lh-h2); font-weight:700; letter-spacing:var(--tracking-tight); margin:0">Tools <span style="color:var(--violet-500)">I Use</span></h2>
-      <p style="font-size:var(--text-body); line-height:var(--lh-body); color:var(--ink-500); margin:14px 0 0; max-width:52ch">The CMS, languages and workflow I rely on to take a site from brief to shipped.</p>
-      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:14px; margin-top:36px; width:100%">
+      <p style="font-size:var(--text-body); line-height:var(--lh-body); color:var(--ink-500); margin:14px 0 0; max-width:52ch">The everyday kit behind the sites above — design, build and hand-off.</p>
+      <div data-tool-row="true" style="display:flex; flex-wrap:nowrap; align-items:flex-start; justify-content:flex-start; gap:22px; margin-top:56px; width:100%; overflow-x:auto; padding:14px 4px 6px">
         <sc-for list="{{ tools }}" as="t" hint-placeholder-count="9">
-          <span style="display:inline-flex; align-items:center; gap:10px; background:var(--white); border:1px solid var(--border-subtle); border-radius:999px; padding:10px 20px 10px 12px; box-shadow:var(--shadow-card)">
-            <span style="width:32px; height:32px; border-radius:999px; background:var(--violet-100); color:var(--violet-600); display:flex; align-items:center; justify-content:center; flex:none">
-              <x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="{{ t.icon }}" size="{{ 16 }}" hint-size="16px,16px"></x-import>
+          <span data-tool-chip="true" style="position:relative; display:flex; flex-direction:column; align-items:center; flex:none">
+            <span data-tool-tag="true" style="position:absolute; bottom:calc(100% + 12px); left:50%; transform:translateX(-50%) rotate(-10deg) scale(0.85); opacity:0; transition:opacity var(--duration-base) var(--ease-out), transform var(--duration-base) var(--ease-out); background:var(--violet-600); color:var(--white); font-size:var(--text-xs); font-weight:600; white-space:nowrap; padding:6px 12px; border-radius:999px; box-shadow:var(--shadow-card); pointer-events:none">{{ t.label }}</span>
+            <span data-r="tool-icon" style="width:clamp(48px, 14vw, 64px); height:clamp(48px, 14vw, 64px); border-radius:999px; background:var(--ink-100); color:var(--ink-700); display:flex; align-items:center; justify-content:center; flex:none; transition:var(--transition-base)">
+              <x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="{{ t.icon }}" size="{{ 26 }}" hint-size="26px,26px"></x-import>
             </span>
-            <span style="font-size:var(--text-sm); font-weight:600; color:var(--ink-900); white-space:nowrap">{{ t.label }}</span>
           </span>
         </sc-for>
       </div>
