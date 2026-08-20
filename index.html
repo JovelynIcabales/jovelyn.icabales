@@ -436,17 +436,17 @@
           <span style="display:inline-flex; align-items:center; height:24px; padding:0 10px; border-radius:8px; background:var(--violet-100); color:var(--violet-700); font-size:var(--text-label); font-weight:500">{{ modalTag }}</span>
           <h3 style="font-size:var(--text-h3); line-height:var(--lh-h3); font-weight:600; letter-spacing:var(--tracking-tight); margin:14px 0 0">{{ modalTitle }}</h3>
           <p style="font-size:var(--text-body); line-height:var(--lh-body); color:var(--ink-500); margin:12px 0 24px; max-width:60ch; text-wrap:pretty">{{ modalDescription }}</p>
-          <sc-if value="{{ hasMedia }}" hint-placeholder-val="{{ false }}">
-            <div style="display:flex; flex-wrap:wrap; gap:12px">
+          <div style="display:flex; flex-wrap:wrap; gap:12px">
+            <sc-if value="{{ hasMedia }}" hint-placeholder-val="{{ false }}">
               <x-import component-from-global-scope="EtechDesignSystem_684170.Button" icon="image" on-click="{{ openFullPage }}" hint-size="170px,44px">View Full Page</x-import>
-              <sc-if value="{{ hasVideo }}" hint-placeholder-val="{{ false }}">
-                <x-import component-from-global-scope="EtechDesignSystem_684170.Button" variant="secondary" icon="play" on-click="{{ openVideo }}" hint-size="140px,44px">Play Video</x-import>
-              </sc-if>
-            </div>
-          </sc-if>
-          <sc-if value="{{ hasLiveSite }}" hint-placeholder-val="{{ true }}">
-            <x-import component-from-global-scope="EtechDesignSystem_684170.Button" icon-after="arrow-right" on-click="{{ openLink }}" hint-size="180px,44px">Visit Live Site</x-import>
-          </sc-if>
+            </sc-if>
+            <sc-if value="{{ hasVideo }}" hint-placeholder-val="{{ false }}">
+              <x-import component-from-global-scope="EtechDesignSystem_684170.Button" variant="secondary" icon="play" on-click="{{ openVideo }}" hint-size="140px,44px">Play Video</x-import>
+            </sc-if>
+            <sc-if value="{{ hasLiveSite }}" hint-placeholder-val="{{ true }}">
+              <x-import component-from-global-scope="EtechDesignSystem_684170.Button" icon-after="arrow-right" on-click="{{ openLink }}" hint-size="180px,44px">Visit Live Site</x-import>
+            </sc-if>
+          </div>
         </div>
       </div>
     </div>
@@ -593,7 +593,7 @@ const PROJECTS = [
     title: "Trigger Point",
     image: "assets/work/trigger-point.png",
     description: "Wildfire protection and private firefighting services in Santa Ana, California. Full-bleed hero over fire photography with a legible text layer, dual calls to action, and a service-area nav that stays readable at every breakpoint. Custom CSS for the headline treatment and button pairing.",
-    link: "https://linkedin.com/in/jsicabales"
+    link: ""
   },
   {
     id: "iron-city",
@@ -603,7 +603,7 @@ const PROJECTS = [
     title: "Iron City Rods & Customs",
     image: "assets/work/iron-city.png",
     description: "Custom car restoration shop in Punta Gorda, Florida. Dark, high-contrast build with a review bar above the nav, a cut-out hero vehicle, and a scrolling trust strip of service points — all assembled in Duda with custom HTML and CSS where the default components fell short.",
-    link: "https://linkedin.com/in/jsicabales"
+    link: ""
   },
   {
     id: "bridal-bliss",
@@ -613,7 +613,7 @@ const PROJECTS = [
     title: "Bridal Bliss",
     image: "assets/work/bridal-bliss.png",
     description: "Wedding planning and event design in Barrie, ON. Centred hero over photography with a floral overlay, dual calls to action, and a five-point trust strip across the fold — all kept legible against a busy background image.",
-    link: "https://linkedin.com/in/jsicabales"
+    link: ""
   },
   {
     id: "wild-lotus",
@@ -623,7 +623,7 @@ const PROJECTS = [
     title: "Wild Lotus Floral Design",
     image: "assets/work/wild-lotus.png",
     description: "Luxury wedding and event florist in Barrie, Ontario. Soft, editorial build — script display type over a full-bleed arrangement photo, a review bar above the nav, and a packages and gallery structure that keeps a long service list easy to move through.",
-    link: "https://linkedin.com/in/jsicabales"
+    link: ""
   },
   {
     id: "all-season",
@@ -633,7 +633,7 @@ const PROJECTS = [
     title: "All Season Comfort",
     image: "assets/work/all-season-comfort.png",
     description: "Family-owned heating and air conditioning company in Theresa, Wisconsin. Dark green build with a product-render hero, rating bar, and a four-column feature strip that stacks into a scannable list on mobile.",
-    link: "https://linkedin.com/in/jsicabales"
+    link: ""
   },
   {
     id: "aspire-beauty",
@@ -1105,7 +1105,7 @@ class Component extends DCLogic {
       modalImage: open ? open.image : "",
       hasMedia: !!(open && open.fullPage),
       hasVideo: !!(open && open.video),
-      hasLiveSite: !!(open && !open.fullPage),
+      hasLiveSite: !!(open && open.link),
       openFullPage: () => { if (open && open.fullPage) this.setState({ fullId: open.id }); },
       fullOpen: !!full,
       fullImage: full ? full.fullPage : "",
@@ -1115,7 +1115,7 @@ class Component extends DCLogic {
       videoSrc: vid ? vid.video : "",
       videoPoster: vid ? vid.image : "",
       closeVideo: () => this.setState({ videoId: null }),
-      openLink: () => { if (open) window.open(open.link, "_blank"); },
+      openLink: () => { if (open && open.link) window.open(open.link, "_blank"); },
       close: () => this.setState({ openId: null }),
       onBackdrop: () => this.setState({ openId: null }),
       stop: (e) => e.stopPropagation()
