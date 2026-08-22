@@ -531,7 +531,7 @@ const VARIANTS = {
   },
   secondary: {
     base: {
-      background: "var(--white)",
+      background: "var(--surface-card)",
       color: "var(--ink-900)",
       border: "1px solid var(--border-input)",
       boxShadow: "var(--shadow-xs)"

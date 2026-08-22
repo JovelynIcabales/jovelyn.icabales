@@ -96,6 +96,7 @@
   @keyframes om-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
   [data-r="tool-ring"] { opacity: 1 !important; animation: none !important; }
   [data-r="tool-item"]:hover [data-r="tool-ring"] { animation: om-spin 24s linear infinite !important; }
+  :root[data-theme="dark"] [data-r="portrait-img"] { mix-blend-mode: normal !important; }
 
   /* ---------- Tablet (<=1024px) ---------- */
   @media (max-width: 1024px) {
@@ -233,7 +234,7 @@
         <div aria-hidden="true" style="position:absolute; inset:-14px; border:1.5px dashed var(--border-dashed-violet); border-radius:999px; pointer-events:none"></div>
         <div aria-hidden="true" style="position:absolute; top:6%; left:-6%; width:76px; height:76px; border-radius:999px; background:var(--violet-300); opacity:0.55; pointer-events:none"></div>
         <div aria-hidden="true" style="position:absolute; bottom:8%; right:-7%; width:118px; height:118px; border-radius:36px; background:var(--gradient-brand); opacity:0.2; transform:rotate(16deg); pointer-events:none"></div>
-        <img src="{{ portrait }}" alt="Jovelyn Icabales" style="position:relative; width:100%; height:100%; display:block; object-fit:cover; object-position:center 18%; border-radius:999px; mix-blend-mode:multiply">
+        <img data-r="portrait-img" src="{{ portrait }}" alt="Jovelyn Icabales" style="position:relative; width:100%; height:100%; display:block; object-fit:cover; object-position:center 18%; border-radius:999px; mix-blend-mode:multiply">
         <div aria-hidden="true" data-hero-mock="browser" style="position:absolute; top:14%; left:-44%; width:270px; background:var(--surface-card); border-radius:16px; box-shadow:var(--shadow-float); overflow:hidden; pointer-events:none">
           <div style="display:flex; align-items:center; gap:6px; padding:10px 12px; background:var(--violet-50); border-bottom:1px solid var(--border-subtle)">
             <span style="width:8px; height:8px; border-radius:999px; background:var(--violet-300)"></span>
@@ -1106,7 +1107,7 @@ class Component extends DCLogic {
         label: t.label,
         isBrand: !!t.slug,
         isGlyph: !t.slug,
-        imgSrc: t.slug ? "https://cdn.simpleicons.org/" + t.slug + "/16425B" : "",
+        imgSrc: t.slug ? "https://cdn.simpleicons.org/" + t.slug + "/" + (this.state.theme === "dark" ? "FFE9A8" : "16425B") : "",
         icon: t.icon || "circle",
         chars: ringChars(t.label),
         ringOpacity: this.state.activeTool === i ? 1 : 0,
