@@ -65,6 +65,7 @@
 
   /* ---------- Tablet (<=1024px) ---------- */
   @media (max-width: 1024px) {
+    input[type="text"], input[type="email"], input[type="password"], textarea { font-size: 16px !important; }
     [data-r="hero-grid"], [data-r="about-grid"], [data-r="contact-grid"] { grid-template-columns: 1fr !important; gap: 48px !important; }
     [data-r="hero-h1"] { font-size: clamp(40px, 6.4vw, 60px) !important; max-width: 20ch !important; }
     [data-r="unfix"] { width: auto !important; height: auto !important; }
@@ -114,7 +115,6 @@
     #work-grid { padding: 0 !important; gap: 8px !important; }
     [data-r="overlay"] { padding: 10px !important; }
     [role="dialog"] > div { padding: 22px 16px 18px !important; }
-    #contact form input, #contact form textarea { font-size: 16px !important; }
   }
   @media (prefers-reduced-motion: reduce) {
     svg[viewBox="0 0 124 124"] { animation: none !important; }
@@ -436,15 +436,21 @@
           <span style="display:inline-flex; align-items:center; height:24px; padding:0 10px; border-radius:8px; background:var(--violet-100); color:var(--violet-700); font-size:var(--text-label); font-weight:500">{{ modalTag }}</span>
           <h3 style="font-size:var(--text-h3); line-height:var(--lh-h3); font-weight:600; letter-spacing:var(--tracking-tight); margin:14px 0 0">{{ modalTitle }}</h3>
           <p style="font-size:var(--text-body); line-height:var(--lh-body); color:var(--ink-500); margin:12px 0 24px; max-width:60ch; text-wrap:pretty">{{ modalDescription }}</p>
-          <div style="display:flex; flex-wrap:wrap; gap:12px">
+          <div data-r="modal-actions" style="display:flex; flex-wrap:wrap; gap:14px">
             <sc-if value="{{ hasMedia }}" hint-placeholder-val="{{ false }}">
-              <x-import component-from-global-scope="EtechDesignSystem_684170.Button" icon="image" on-click="{{ openFullPage }}" hint-size="170px,44px">View Full Page</x-import>
+              <button type="button" data-r="modal-action-btn" aria-label="View Full Page" title="View Full Page" onClick="{{ openFullPage }}" style="width:48px; height:48px; flex:none; display:flex; align-items:center; justify-content:center; border:0; border-radius:999px; background:var(--gradient-brand); color:var(--white); box-shadow:var(--shadow-button); cursor:pointer; transition:var(--transition-base)" style-hover="transform:translateY(-2px)" style-active="transform:var(--press-scale)">
+                <x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="image" size="{{ 20 }}" hint-size="20px,20px"></x-import>
+              </button>
             </sc-if>
             <sc-if value="{{ hasVideo }}" hint-placeholder-val="{{ false }}">
-              <x-import component-from-global-scope="EtechDesignSystem_684170.Button" variant="secondary" icon="play" on-click="{{ openVideo }}" hint-size="140px,44px">Play Video</x-import>
+              <button type="button" data-r="modal-action-btn" aria-label="Play Video" title="Play Video" onClick="{{ openVideo }}" style="width:48px; height:48px; flex:none; display:flex; align-items:center; justify-content:center; border:1px solid var(--border-input); border-radius:999px; background:var(--white); color:var(--ink-900); box-shadow:var(--shadow-xs); cursor:pointer; transition:var(--transition-base)" style-hover="border-color:var(--violet-300); color:var(--violet-600); transform:translateY(-2px)" style-active="transform:var(--press-scale)">
+                <x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="play" size="{{ 20 }}" hint-size="20px,20px"></x-import>
+              </button>
             </sc-if>
             <sc-if value="{{ hasLiveSite }}" hint-placeholder-val="{{ true }}">
-              <x-import component-from-global-scope="EtechDesignSystem_684170.Button" icon-after="arrow-right" on-click="{{ openLink }}" hint-size="180px,44px">Visit Live Site</x-import>
+              <button type="button" data-r="modal-action-btn" aria-label="Visit Live Site" title="Visit Live Site" onClick="{{ openLink }}" style="width:48px; height:48px; flex:none; display:flex; align-items:center; justify-content:center; border:0; border-radius:999px; background:var(--gradient-brand); color:var(--white); box-shadow:var(--shadow-button); cursor:pointer; transition:var(--transition-base)" style-hover="transform:translateY(-2px)" style-active="transform:var(--press-scale)">
+                <x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="external-link" size="{{ 20 }}" hint-size="20px,20px"></x-import>
+              </button>
             </sc-if>
           </div>
         </div>
