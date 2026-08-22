@@ -429,8 +429,10 @@
               <span aria-hidden="true" style="position:absolute; top:-18px; right:6px; font-size:104px; line-height:1; font-weight:700; letter-spacing:var(--tracking-tight); color:color-mix(in oklab, var(--violet-500) 14%, transparent); pointer-events:none; user-select:none">{{ cert.num }}</span>
               <div style="position:relative; width:104px; height:104px; display:flex; align-items:center; justify-content:center">
                 <span aria-hidden="true" style="position:absolute; inset:-9px; border-radius:999px; border:1.5px dashed var(--border-dashed-violet); opacity:0.6"></span>
-                <span aria-hidden="true" style="position:absolute; bottom:2px; left:26px; width:16px; height:30px; background:var(--violet-400); clip-path:polygon(0 0, 100% 0, 100% 100%, 50% 74%, 0 100%); transform:rotate(-14deg); opacity:0.9"></span>
-                <span aria-hidden="true" style="position:absolute; bottom:2px; right:26px; width:16px; height:30px; background:var(--pink-400); clip-path:polygon(0 0, 100% 0, 100% 100%, 50% 74%, 0 100%); transform:rotate(14deg); opacity:0.9"></span>
+                <sc-if value="{{ cert.hasNoCustomImage }}" hint-placeholder-val="{{ true }}">
+                  <span aria-hidden="true" style="position:absolute; bottom:2px; left:26px; width:16px; height:30px; background:var(--violet-400); clip-path:polygon(0 0, 100% 0, 100% 100%, 50% 74%, 0 100%); transform:rotate(-14deg); opacity:0.9"></span>
+                  <span aria-hidden="true" style="position:absolute; bottom:2px; right:26px; width:16px; height:30px; background:var(--pink-400); clip-path:polygon(0 0, 100% 0, 100% 100%, 50% 74%, 0 100%); transform:rotate(14deg); opacity:0.9"></span>
+                </sc-if>
                 <sc-if value="{{ cert.hasCustomImage }}" hint-placeholder-val="{{ false }}">
                   <img src="{{ cert.image }}" alt="{{ cert.title }}" style="position:relative; width:88px; height:88px; border-radius:999px; object-fit:cover; box-shadow:var(--shadow-float)">
                 </sc-if>
