@@ -39,9 +39,43 @@
     --shadow-card-hover:0 16px 40px rgba(22,66,91,.13);
     --shadow-float:0 10px 30px rgba(22,66,91,.14);
     --shadow-button:0 8px 20px rgba(129,195,215,.38);
+    --danger:#B4325A;
+    --glow-hover:rgba(129,195,215,.55);
+    --surface-page:#FFFFFF;
+    --surface-card:#FFFFFF;
+    --surface-input:#FFFFFF;
+    --text-on-brand:#FFFFFF;
+  }
+  /* ---------- Dark mode: navy base, yellow accents ---------- */
+  :root[data-theme="dark"] {
+    --violet-50:#241D0C; --violet-100:#3D3316; --violet-200:#5C4C1E; --violet-300:#8A7228;
+    --violet-400:#C9A83A; --violet-500:#F5C542; --violet-600:#FFD65C; --violet-700:#FFE9A8;
+    --pink-100:#3D3316; --pink-200:#5C4C1E; --pink-300:#8A7228; --pink-400:#F5C542; --pink-500:#FFE9A8;
+    --ink-900:#F3F7FA; --ink-700:#D3E0EA; --ink-500:#9AB0C2; --ink-400:#6B8399;
+    --ink-300:#3A526B; --ink-200:#24394F; --ink-100:#1B2E44; --ink-050:#0F2033;
+    --surface-tint:#0F1F30; --border-subtle:#22374D;
+    --border-dashed-violet:#8A7228; --border-dashed-pink:#8A7228;
+    --focus-ring:rgba(245,197,66,.4);
+    --gradient-brand:linear-gradient(90deg,#F5C542 0%,#FFD65C 55%,#FFE9A8 100%);
+    --gradient-brand-diag:linear-gradient(120deg,#E0B030 0%,#FFE9A8 100%);
+    --gradient-section:linear-gradient(135deg,#0B1826 0%,#16283D 48%,#22374D 100%);
+    --gradient-soft:linear-gradient(135deg,#1B2E44 0%,#3D3316 100%);
+    --accent-1:#F5C542; --accent-1-well:#3D3316; --accent-2:#FFD65C; --accent-2-well:#2B2410;
+    --shadow-xs:0 1px 2px rgba(0,0,0,.4);
+    --shadow-sm:0 4px 12px rgba(0,0,0,.35);
+    --shadow-card:0 8px 24px rgba(0,0,0,.45);
+    --shadow-card-hover:0 16px 40px rgba(0,0,0,.55);
+    --shadow-float:0 10px 30px rgba(0,0,0,.5);
+    --shadow-button:0 8px 20px rgba(245,197,66,.35);
+    --danger:#FF6B8A;
+    --glow-hover:rgba(245,197,66,.45);
+    --surface-page:#0B1826;
+    --surface-card:#122336;
+    --surface-input:#16283D;
+    --text-on-brand:#16283D;
   }
   html { scroll-behavior: smooth; }
-  body { margin:0; background:var(--white); color:var(--ink-900); font-family:var(--font-sans); -webkit-font-smoothing:antialiased; }
+  body { margin:0; background:var(--surface-page); color:var(--ink-900); font-family:var(--font-sans); -webkit-font-smoothing:antialiased; transition:background-color 220ms ease, color 220ms ease; }
   * { box-sizing: border-box; }
   a { color: var(--ink-900); text-decoration: none; transition: color var(--duration-fast) var(--ease-out); }
   a:hover { color: var(--violet-500); }
@@ -51,7 +85,7 @@
   #top button:hover,
   #contact form button:hover,
   [role="dialog"] button:not([aria-label="Close"]):hover {
-    box-shadow:0 12px 26px rgba(129,195,215,.55) !important;
+    box-shadow:0 12px 26px var(--glow-hover) !important;
   }
   [data-hero-mock] { display: none !important; }
   @media (min-width: 1200px) {
@@ -121,13 +155,14 @@
     html { scroll-behavior: auto; }
     [data-marquee] { animation: none !important; }
     [data-zoom] { transition: none !important; transform: none !important; }
+    body { transition: none !important; }
   }
 </style>
 </helmet>
 
-<div style="min-height:100vh; width:100%; overflow-x:hidden">
+<div style="min-height:100vh; width:100%; overflow-x:hidden; background:var(--surface-page)">
 
-  <header data-r="hdr" style="padding:22px 5%; border-bottom:1px solid var(--border-subtle)">
+  <header data-r="hdr" style="background:var(--surface-page); padding:22px 5%; border-bottom:1px solid var(--border-subtle)">
     <div data-r="hdr-mobile" style="display:none; width:100%; align-items:center; justify-content:space-between; gap:16px">
       <button type="button" aria-label="Menu" aria-expanded="{{ menuOpen }}" onClick="{{ toggleMenu }}" style="width:44px; height:44px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; border:0; background:transparent; cursor:pointer; padding:0">
         <span style="width:26px; height:2.5px; border-radius:2px; background:var(--violet-600)"></span>
@@ -135,6 +170,14 @@
         <span style="width:26px; height:2.5px; border-radius:2px; background:var(--violet-600)"></span>
       </button>
       <a href="#top" style="display:flex; align-items:center; justify-content:center; flex:1; min-width:0"><img src="{{ logo }}" alt="Jovelyn Icabales — Design, Develop, Elevate" style="height:40px; width:auto; max-width:100%; display:block; object-fit:contain"></a>
+      <button type="button" aria-label="{{ themeToggleLabel }}" title="{{ themeToggleLabel }}" onClick="{{ toggleTheme }}" style="width:44px; height:44px; flex:none; display:flex; align-items:center; justify-content:center; border:0; background:transparent; color:var(--violet-600); cursor:pointer; padding:0">
+        <sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}">
+          <x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="sun" size="{{ 22 }}" hint-size="22px,22px"></x-import>
+        </sc-if>
+        <sc-if value="{{ isLight }}" hint-placeholder-val="{{ true }}">
+          <x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="moon" size="{{ 22 }}" hint-size="22px,22px"></x-import>
+        </sc-if>
+      </button>
       <a href="{{ phoneHref }}" aria-label="Call" style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; color:var(--violet-600)">
         <x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="phone" size="{{ 24 }}" hint-size="24px,24px"></x-import>
       </a>
@@ -157,6 +200,14 @@
           <a href="#work">Work</a>
           <a href="#contact">Contact</a>
         </nav>
+        <button type="button" aria-label="{{ themeToggleLabel }}" title="{{ themeToggleLabel }}" onClick="{{ toggleTheme }}" style="width:40px; height:40px; flex:none; display:flex; align-items:center; justify-content:center; border:1px solid var(--border-subtle); border-radius:999px; background:var(--surface-card); color:var(--violet-600); cursor:pointer; transition:var(--transition-base)" style-hover="border-color:var(--violet-300); color:var(--violet-600)">
+          <sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}">
+            <x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="sun" size="{{ 18 }}" hint-size="18px,18px"></x-import>
+          </sc-if>
+          <sc-if value="{{ isLight }}" hint-placeholder-val="{{ true }}">
+            <x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="moon" size="{{ 18 }}" hint-size="18px,18px"></x-import>
+          </sc-if>
+        </button>
         <x-import component-from-global-scope="EtechDesignSystem_684170.Button" size="md" on-click="{{ goContact }}" hint-size="140px,44px">Let's Talk</x-import>
       </div>
     </div>
@@ -170,7 +221,7 @@
     <div data-r="hero-grid" style="position:relative; width:100%; display:grid; grid-template-columns:1.15fr 0.85fr; gap:64px; align-items:center">
       <div>
         <span style="display:inline-flex; align-items:center; gap:6px; height:24px; padding:0 10px; border-radius:var(--radius-badge, 8px); background:var(--violet-100); color:var(--violet-700); font-size:var(--text-label); font-weight:500">{{ heroBadge }}</span>
-        <h1 data-r="hero-h1" style="font-size: 70px; line-height: var(--lh-display); font-weight: 700; letter-spacing: var(--tracking-tight); margin: 20px 0 0; max-width: 16ch; text-wrap: pretty; color: #16425B">{{ heroTitleLead }}<span data-r="unfix" style="color: var(--violet-500); width: 548px; height: 144px;">{{ heroTitleAccent }}</span></h1>
+        <h1 data-r="hero-h1" style="font-size: 70px; line-height: var(--lh-display); font-weight: 700; letter-spacing: var(--tracking-tight); margin: 20px 0 0; max-width: 16ch; text-wrap: pretty; color: var(--ink-900)">{{ heroTitleLead }}<span data-r="unfix" style="color: var(--violet-500); width: 548px; height: 144px;">{{ heroTitleAccent }}</span></h1>
         <p style="font-size: var(--text-lead); line-height: var(--lh-lead); color: var(--ink-500); max-width: 52ch; margin: 24px 0 0; text-wrap: pretty; width: 591px; height: 89px" data-r="unfix">{{ heroLead }}</p>
         <div style="display:flex; flex-wrap:wrap; gap:14px; margin-top:36px">
           <x-import component-from-global-scope="EtechDesignSystem_684170.Button" size="lg" icon="mail" on-click="{{ goMail }}" hint-size="180px,52px">Contact Me</x-import>
@@ -183,12 +234,12 @@
         <div aria-hidden="true" style="position:absolute; top:6%; left:-6%; width:76px; height:76px; border-radius:999px; background:var(--violet-300); opacity:0.55; pointer-events:none"></div>
         <div aria-hidden="true" style="position:absolute; bottom:8%; right:-7%; width:118px; height:118px; border-radius:36px; background:var(--gradient-brand); opacity:0.2; transform:rotate(16deg); pointer-events:none"></div>
         <img src="{{ portrait }}" alt="Jovelyn Icabales" style="position:relative; width:100%; height:100%; display:block; object-fit:cover; object-position:center 18%; border-radius:999px; mix-blend-mode:multiply">
-        <div aria-hidden="true" data-hero-mock="browser" style="position:absolute; top:14%; left:-44%; width:270px; background:var(--white); border-radius:16px; box-shadow:var(--shadow-float); overflow:hidden; pointer-events:none">
+        <div aria-hidden="true" data-hero-mock="browser" style="position:absolute; top:14%; left:-44%; width:270px; background:var(--surface-card); border-radius:16px; box-shadow:var(--shadow-float); overflow:hidden; pointer-events:none">
           <div style="display:flex; align-items:center; gap:6px; padding:10px 12px; background:var(--violet-50); border-bottom:1px solid var(--border-subtle)">
             <span style="width:8px; height:8px; border-radius:999px; background:var(--violet-300)"></span>
             <span style="width:8px; height:8px; border-radius:999px; background:var(--violet-200)"></span>
             <span style="width:8px; height:8px; border-radius:999px; background:var(--ink-200)"></span>
-            <span style="flex:1; height:14px; margin-left:8px; border-radius:999px; background:var(--white); border:1px solid var(--border-subtle)"></span>
+            <span style="flex:1; height:14px; margin-left:8px; border-radius:999px; background:var(--surface-card); border:1px solid var(--border-subtle)"></span>
           </div>
           <div style="display:grid; grid-template-columns:64px 1fr; gap:10px; padding:12px">
             <div style="display:flex; flex-direction:column; gap:6px">
@@ -209,7 +260,7 @@
             </div>
           </div>
         </div>
-        <div aria-hidden="true" data-hero-mock="chip" style="position:absolute; bottom:12%; left:-28%; width:150px; background:var(--white); border-radius:14px; box-shadow:var(--shadow-card); padding:12px 14px; display:flex; align-items:center; gap:10px; pointer-events:none">
+        <div aria-hidden="true" data-hero-mock="chip" style="position:absolute; bottom:12%; left:-28%; width:150px; background:var(--surface-card); border-radius:14px; box-shadow:var(--shadow-card); padding:12px 14px; display:flex; align-items:center; gap:10px; pointer-events:none">
           <span style="width:34px; height:34px; border-radius:10px; background:var(--violet-100); display:flex; align-items:center; justify-content:center">
             <span style="width:16px; height:12px; border:1.5px solid var(--violet-600); border-radius:2px"></span>
           </span>
@@ -225,7 +276,7 @@
   <sc-if value="{{ showMarquee }}" hint-placeholder-val="{{ true }}">
     <div style="background:var(--gradient-brand); overflow:hidden; padding:22px 0">
       <div data-marquee="true" ref="{{ marqueeRef }}" style="display:flex; width:max-content; animation:om-marquee 34s linear infinite" style-hover="animation-play-state:paused">
-        <div style="display:flex; align-items:center; gap:32px; padding-right:32px; font-size:var(--text-sm); font-weight:600; letter-spacing:var(--tracking-wide); text-transform:uppercase; color:var(--white)">
+        <div style="display:flex; align-items:center; gap:32px; padding-right:32px; font-size:var(--text-sm); font-weight:600; letter-spacing:var(--tracking-wide); text-transform:uppercase; color:var(--text-on-brand)">
           <span>Duda CMS</span><span style="opacity:0.6">/</span>
           <span>HTML</span><span style="opacity:0.6">/</span>
           <span>CSS Customization</span><span style="opacity:0.6">/</span>
@@ -235,7 +286,7 @@
           <span>Quality Assurance</span><span style="opacity:0.6">/</span>
           <span>Figma</span><span style="opacity:0.6">/</span>
         </div>
-        <div aria-hidden="true" style="display:flex; align-items:center; gap:32px; padding-right:32px; font-size:var(--text-sm); font-weight:600; letter-spacing:var(--tracking-wide); text-transform:uppercase; color:var(--white)">
+        <div aria-hidden="true" style="display:flex; align-items:center; gap:32px; padding-right:32px; font-size:var(--text-sm); font-weight:600; letter-spacing:var(--tracking-wide); text-transform:uppercase; color:var(--text-on-brand)">
           <span>Duda CMS</span><span style="opacity:0.6">/</span>
           <span>HTML</span><span style="opacity:0.6">/</span>
           <span>CSS Customization</span><span style="opacity:0.6">/</span>
@@ -249,7 +300,7 @@
     </div>
   </sc-if>
 
-  <section id="about" data-r="sec" style="position:relative; padding:96px 40px; overflow:hidden">
+  <section id="about" data-r="sec" style="position:relative; background:var(--surface-page); padding:96px 40px; overflow:hidden">
     <div aria-hidden="true" style="position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg, transparent, var(--border-subtle) 20%, var(--border-subtle) 80%, transparent); pointer-events:none"></div>
     <div aria-hidden="true" style="position:absolute; top:120px; right:-110px; width:300px; height:300px; border-radius:999px; border:1.5px dashed var(--border-dashed-violet); opacity:0.45; pointer-events:none"></div>
     <div aria-hidden="true" style="position:absolute; bottom:56px; left:-60px; width:180px; height:180px; border-radius:56px; background:var(--violet-50); transform:rotate(-14deg); pointer-events:none"></div>
@@ -260,7 +311,7 @@
       </div>
       <div data-r="stats" style="display:grid; grid-template-columns:1fr 1fr; grid-auto-rows:1fr; gap:24px">
         <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
-          <div style="background:var(--white); border:1px solid var(--border-subtle); border-radius:20px; box-shadow:var(--shadow-card); padding:24px">
+          <div style="background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:20px; box-shadow:var(--shadow-card); padding:24px">
             <div style="font-size:clamp(22px, 2vw, 34px); font-weight:700; letter-spacing:var(--tracking-tight); color:var(--violet-500); white-space:nowrap">{{ s.value }}</div>
             <div style="font-size:var(--text-sm); color:var(--ink-500); margin-top:4px">{{ s.label }}</div>
           </div>
@@ -283,7 +334,7 @@
               <img data-zoom="true" src="{{ p.image }}" alt="{{ p.title }}" style="width:100%; height:100%; object-fit:cover; display:block; transition:transform var(--duration-slow) var(--ease-out)" style-hover="transform:scale(1.04)">
               <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(22,66,91,0) 42%, rgba(22,66,91,0.88) 100%); pointer-events:none"></div>
               <div style="position:absolute; left:0; right:0; bottom:0; padding:24px; text-align:left; pointer-events:none">
-                <span style="display:inline-flex; align-items:center; height:24px; padding:0 10px; border-radius:8px; background:rgba(255,255,255,0.92); color:var(--violet-700); font-size:var(--text-label); font-weight:500">{{ p.tag }}</span>
+                <span style="display:inline-flex; align-items:center; height:24px; padding:0 10px; border-radius:8px; background:rgba(255,255,255,0.92); color:#16425B; font-size:var(--text-label); font-weight:500">{{ p.tag }}</span>
                 <div style="font-size:var(--text-h4); line-height:var(--lh-h4); font-weight:600; color:var(--white); margin-top:10px; text-wrap:pretty">{{ p.title }}</div>
               </div>
             </div>
@@ -291,7 +342,7 @@
         </sc-for>
         <sc-if value="{{ expanded }}" hint-placeholder-val="{{ false }}">
         <div data-r="work-cta" style="min-width:0; aspect-ratio:3/2; width:100%; overflow:hidden; background:var(--gradient-section); display:flex; flex-direction:column; justify-content:center; gap:10px; padding:22px; text-align:left">
-          <span style="font-size:var(--text-label); font-weight:500; letter-spacing:var(--tracking-wide); text-transform:uppercase; color:var(--violet-200)">And 190+ more</span>
+          <span style="font-size:var(--text-label); font-weight:500; letter-spacing:var(--tracking-wide); text-transform:uppercase; color:var(--text-on-brand-dim)">And 190+ more</span>
           <p style="font-size:var(--text-body); line-height:1.5; font-weight:500; color:var(--white); margin:0; max-width:26ch; text-wrap:pretty">These are the ones I can show — the rest shipped under client accounts.</p>
           <x-import component-from-global-scope="EtechDesignSystem_684170.Button" variant="secondary" size="sm" on-click="{{ goContact }}" hint-size="150px,36px">Ask Me About Them</x-import>
         </div>
@@ -316,7 +367,7 @@
       </div>
       <div data-r="exp-grid" style="display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:24px; margin-top:44px; align-items:stretch">
         <sc-for list="{{ experience }}" as="x" hint-placeholder-count="3">
-          <article style="display:flex; flex-direction:column; gap:14px; background:var(--white); border:1px solid var(--border-subtle); border-radius:20px; box-shadow:var(--shadow-card); padding:28px; transition:var(--transition-base)" style-hover="transform:translateY(-3px); box-shadow:var(--shadow-card-hover)">
+          <article style="display:flex; flex-direction:column; gap:14px; background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:20px; box-shadow:var(--shadow-card); padding:28px; transition:var(--transition-base)" style-hover="transform:translateY(-3px); box-shadow:var(--shadow-card-hover)">
             <span style="align-self:flex-start; font-size:var(--text-xs); font-weight:600; letter-spacing:var(--tracking-wide); text-transform:uppercase; color:var(--violet-700); background:var(--accent-1-well); border-radius:8px; padding:6px 10px">{{ x.period }}</span>
             <div>
               <h3 style="font-size:var(--text-h4); line-height:1.3; font-weight:600; letter-spacing:var(--tracking-tight); margin:0">{{ x.role }}</h3>
@@ -373,11 +424,11 @@
         <h2 data-r="h1" style="font-size:var(--text-h1); line-height:var(--lh-h1); font-weight:700; letter-spacing:var(--tracking-tight); color:var(--white); margin:0; max-width:22ch; text-wrap:pretty">Need A Website Built, Rebuilt Or Rescued?</h2>
         <p style="font-size:var(--text-lead); line-height:var(--lh-lead); color:var(--text-on-brand-dim); margin:20px 0 0; max-width:44ch">Available for full-time Web Designer and UI/UX roles, plus freelance DUDA CMS website development. From new builds to rebuilds and CMS updates, I'm ready to help bring your project to life.</p>
         <div style="display:flex; flex-direction:column; gap:12px; margin-top:32px; font-size:var(--text-body); color:var(--white)">
-          <div style="display:flex; align-items:center; gap:10px"><span style="display:flex; color:var(--violet-200)"><x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="mail" size="{{ 18 }}" hint-size="18px,18px"></x-import></span><span>{{ emailAddress }}</span></div>
-          <div style="display:flex; align-items:center; gap:10px"><span style="display:flex; color:var(--violet-200)"><x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="phone" size="{{ 18 }}" hint-size="18px,18px"></x-import></span><a href="{{ phoneHref }}" style="color:var(--white)">{{ phoneText }}</a></div>
+          <div style="display:flex; align-items:center; gap:10px"><span style="display:flex; color:var(--text-on-brand-dim)"><x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="mail" size="{{ 18 }}" hint-size="18px,18px"></x-import></span><span>{{ emailAddress }}</span></div>
+          <div style="display:flex; align-items:center; gap:10px"><span style="display:flex; color:var(--text-on-brand-dim)"><x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="phone" size="{{ 18 }}" hint-size="18px,18px"></x-import></span><a href="{{ phoneHref }}" style="color:var(--white)">{{ phoneText }}</a></div>
         </div>
       </div>
-      <form onSubmit="{{ onSubmit }}" data-r="form" style="background:var(--white); border-radius:20px; box-shadow:var(--shadow-float); padding:32px; display:flex; flex-direction:column; gap:18px">
+      <form onSubmit="{{ onSubmit }}" data-r="form" style="background:var(--surface-card); border-radius:20px; box-shadow:var(--shadow-float); padding:32px; display:flex; flex-direction:column; gap:18px">
         <label style="display:flex; flex-direction:column; gap:7px">
           <span style="font-size:var(--text-sm); font-weight:500; color:var(--ink-700)">Name</span>
           <input name="name" type="text" required="required" placeholder="Your name" ref="{{ nameRef }}" style="height:48px; padding:0 18px; border:1px solid var(--border-input); border-radius:999px; background:var(--surface-input); font-size:var(--text-body); color:var(--ink-900); outline:none; transition:var(--transition-base)">
@@ -395,14 +446,14 @@
           <span style="display:flex; align-items:center; justify-content:center; gap:8px; font-size:var(--text-sm); font-weight:500; color:var(--violet-600); text-align:center">Thanks — your message is on its way. I'll reply soon.</span>
         </sc-if>
         <sc-if value="{{ sendError }}" hint-placeholder-val="{{ false }}">
-          <span style="font-size:var(--text-sm); font-weight:500; color:#B4325A; text-align:center">Something went wrong. Email me directly at icabalessolengjovelyn@gmail.com.</span>
+          <span style="font-size:var(--text-sm); font-weight:500; color:var(--danger); text-align:center">Something went wrong. Email me directly at icabalessolengjovelyn@gmail.com.</span>
         </sc-if>
         <span style="font-size:var(--text-xs); line-height:var(--lh-xs); color:var(--ink-400); text-align:center">Ask about any project here, my process, or a site you need built.</span>
       </form>
     </div>
   </section>
 
-  <footer data-r="footer" style="padding:32px 40px; border-top:1px solid var(--border-subtle)">
+  <footer data-r="footer" style="background:var(--surface-page); padding:32px 40px; border-top:1px solid var(--border-subtle)">
     <div style="max-width:1200px; margin:0 auto; display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between; font-size:var(--text-sm); color:var(--ink-500)">
       <span>© 2026 Jovelyn Icabales</span>
       <div style="display:flex; align-items:center; flex-wrap:wrap; gap:12px 20px">
@@ -416,21 +467,21 @@
   <sc-if value="{{ videoOpen }}" hint-placeholder-val="{{ false }}">
     <div onClick="{{ closeVideo }}" data-r="overlay" style="position:fixed; inset:0; z-index:130; background:rgba(22,66,91,0.72); backdrop-filter:blur(2px); display:flex; align-items:center; justify-content:center; padding:40px">
       <video src="{{ videoSrc }}" poster="{{ videoPoster }}" controls="controls" autoplay="autoplay" muted="muted" playsinline="playsinline" preload="metadata" onClick="{{ stop }}" style="display:block; width:min(1000px,100%); aspect-ratio:16/9; max-height:82vh; object-fit:contain; border-radius:14px; background:var(--ink-900); box-shadow:var(--shadow-card-hover)"></video>
-      <button type="button" aria-label="Close" onClick="{{ closeVideo }}" style="position:fixed; top:24px; right:28px; width:44px; height:44px; display:flex; align-items:center; justify-content:center; border:0; border-radius:999px; background:var(--white); color:var(--ink-900); font-size:20px; line-height:1; cursor:pointer; box-shadow:var(--shadow-card); transition:var(--transition-base)" style-hover="color:var(--violet-600); transform:scale(1.06)">×</button>
+      <button type="button" aria-label="Close" onClick="{{ closeVideo }}" style="position:fixed; top:24px; right:28px; width:44px; height:44px; display:flex; align-items:center; justify-content:center; border:0; border-radius:999px; background:var(--surface-card); color:var(--ink-900); font-size:20px; line-height:1; cursor:pointer; box-shadow:var(--shadow-card); transition:var(--transition-base)" style-hover="color:var(--violet-600); transform:scale(1.06)">×</button>
     </div>
   </sc-if>
 
   <sc-if value="{{ fullOpen }}" hint-placeholder-val="{{ false }}">
     <div onClick="{{ closeFull }}" style="position:fixed; inset:0; z-index:120; background:rgba(22,66,91,0.6); backdrop-filter:blur(2px); overflow-y:auto; padding:48px 24px">
       <img src="{{ fullImage }}" alt="{{ modalTitle }} — full home page" style="display:block; width:min(1000px,100%); margin:0 auto; border-radius:14px; box-shadow:var(--shadow-card-hover)">
-      <button type="button" aria-label="Close" onClick="{{ closeFull }}" style="position:fixed; top:24px; right:28px; width:44px; height:44px; display:flex; align-items:center; justify-content:center; border:0; border-radius:999px; background:var(--white); color:var(--ink-900); font-size:20px; line-height:1; cursor:pointer; box-shadow:var(--shadow-card); transition:var(--transition-base)" style-hover="color:var(--violet-600); transform:scale(1.06)">×</button>
+      <button type="button" aria-label="Close" onClick="{{ closeFull }}" style="position:fixed; top:24px; right:28px; width:44px; height:44px; display:flex; align-items:center; justify-content:center; border:0; border-radius:999px; background:var(--surface-card); color:var(--ink-900); font-size:20px; line-height:1; cursor:pointer; box-shadow:var(--shadow-card); transition:var(--transition-base)" style-hover="color:var(--violet-600); transform:scale(1.06)">×</button>
     </div>
   </sc-if>
 
   <sc-if value="{{ modalOpen }}" hint-placeholder-val="{{ false }}">
     <div onClick="{{ onBackdrop }}" data-r="overlay" style="position:fixed; inset:0; z-index:100; background:rgba(22,66,91,0.34); backdrop-filter:blur(2px); display:flex; align-items:center; justify-content:center; padding:40px">
-      <div role="dialog" aria-modal="true" onClick="{{ stop }}" style="position:relative; background:var(--white); border-radius:20px; width:min(760px,100%); max-height:86vh; overflow-y:auto; box-shadow:var(--shadow-card-hover); padding:12px">
-        <button type="button" aria-label="Close" onClick="{{ close }}" style="position:absolute; top:24px; right:24px; z-index:2; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:0; border-radius:999px; background:var(--white); color:var(--ink-900); font-size:18px; line-height:1; cursor:pointer; box-shadow:var(--shadow-sm); transition:var(--transition-base)" style-hover="color:var(--violet-600); transform:scale(1.06)">×</button>
+      <div role="dialog" aria-modal="true" onClick="{{ stop }}" style="position:relative; background:var(--surface-card); border-radius:20px; width:min(760px,100%); max-height:86vh; overflow-y:auto; box-shadow:var(--shadow-card-hover); padding:12px">
+        <button type="button" aria-label="Close" onClick="{{ close }}" style="position:absolute; top:24px; right:24px; z-index:2; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:0; border-radius:999px; background:var(--surface-card); color:var(--ink-900); font-size:18px; line-height:1; cursor:pointer; box-shadow:var(--shadow-sm); transition:var(--transition-base)" style-hover="color:var(--violet-600); transform:scale(1.06)">×</button>
         <img src="{{ modalImage }}" alt="" style="width:100%; aspect-ratio:3/2; object-fit:cover; display:block; border-radius:14px">
         <div style="padding:28px 20px 20px">
           <span style="display:inline-flex; align-items:center; height:24px; padding:0 10px; border-radius:8px; background:var(--violet-100); color:var(--violet-700); font-size:var(--text-label); font-weight:500">{{ modalTag }}</span>
@@ -438,17 +489,17 @@
           <p style="font-size:var(--text-body); line-height:var(--lh-body); color:var(--ink-500); margin:12px 0 24px; max-width:60ch; text-wrap:pretty">{{ modalDescription }}</p>
           <div data-r="modal-actions" style="display:flex; flex-wrap:wrap; gap:14px">
             <sc-if value="{{ hasMedia }}" hint-placeholder-val="{{ false }}">
-              <button type="button" data-r="modal-action-btn" aria-label="View Full Page" title="View Full Page" onClick="{{ openFullPage }}" style="width:48px; height:48px; flex:none; display:flex; align-items:center; justify-content:center; border:0; border-radius:999px; background:var(--gradient-brand); color:var(--white); box-shadow:var(--shadow-button); cursor:pointer; transition:var(--transition-base)" style-hover="transform:translateY(-2px)" style-active="transform:var(--press-scale)">
+              <button type="button" data-r="modal-action-btn" aria-label="View Full Page" title="View Full Page" onClick="{{ openFullPage }}" style="width:48px; height:48px; flex:none; display:flex; align-items:center; justify-content:center; border:0; border-radius:999px; background:var(--gradient-brand); color:var(--text-on-brand); box-shadow:var(--shadow-button); cursor:pointer; transition:var(--transition-base)" style-hover="transform:translateY(-2px)" style-active="transform:var(--press-scale)">
                 <x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="image" size="{{ 20 }}" hint-size="20px,20px"></x-import>
               </button>
             </sc-if>
             <sc-if value="{{ hasVideo }}" hint-placeholder-val="{{ false }}">
-              <button type="button" data-r="modal-action-btn" aria-label="Play Video" title="Play Video" onClick="{{ openVideo }}" style="width:48px; height:48px; flex:none; display:flex; align-items:center; justify-content:center; border:1px solid var(--border-input); border-radius:999px; background:var(--white); color:var(--ink-900); box-shadow:var(--shadow-xs); cursor:pointer; transition:var(--transition-base)" style-hover="border-color:var(--violet-300); color:var(--violet-600); transform:translateY(-2px)" style-active="transform:var(--press-scale)">
+              <button type="button" data-r="modal-action-btn" aria-label="Play Video" title="Play Video" onClick="{{ openVideo }}" style="width:48px; height:48px; flex:none; display:flex; align-items:center; justify-content:center; border:1px solid var(--border-input); border-radius:999px; background:var(--surface-card); color:var(--ink-900); box-shadow:var(--shadow-xs); cursor:pointer; transition:var(--transition-base)" style-hover="border-color:var(--violet-300); color:var(--violet-600); transform:translateY(-2px)" style-active="transform:var(--press-scale)">
                 <x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="play" size="{{ 20 }}" hint-size="20px,20px"></x-import>
               </button>
             </sc-if>
             <sc-if value="{{ hasLiveSite }}" hint-placeholder-val="{{ true }}">
-              <button type="button" data-r="modal-action-btn" aria-label="Visit Live Site" title="Visit Live Site" onClick="{{ openLink }}" style="width:48px; height:48px; flex:none; display:flex; align-items:center; justify-content:center; border:0; border-radius:999px; background:var(--gradient-brand); color:var(--white); box-shadow:var(--shadow-button); cursor:pointer; transition:var(--transition-base)" style-hover="transform:translateY(-2px)" style-active="transform:var(--press-scale)">
+              <button type="button" data-r="modal-action-btn" aria-label="Visit Live Site" title="Visit Live Site" onClick="{{ openLink }}" style="width:48px; height:48px; flex:none; display:flex; align-items:center; justify-content:center; border:0; border-radius:999px; background:var(--gradient-brand); color:var(--text-on-brand); box-shadow:var(--shadow-button); cursor:pointer; transition:var(--transition-base)" style-hover="transform:translateY(-2px)" style-active="transform:var(--press-scale)">
                 <x-import component-from-global-scope="EtechDesignSystem_684170.Icon" name="external-link" size="{{ 20 }}" hint-size="20px,20px"></x-import>
               </button>
             </sc-if>
@@ -460,7 +511,7 @@
 
   <sc-if value="{{ adminOpen }}" hint-placeholder-val="{{ false }}">
     <div style="position:fixed; inset:0; z-index:200; background:rgba(22,66,91,0.45); display:flex; justify-content:flex-end">
-      <div style="width:min(560px, 100%); height:100%; background:var(--white); display:flex; flex-direction:column; box-shadow:var(--shadow-float)">
+      <div style="width:min(560px, 100%); height:100%; background:var(--surface-card); display:flex; flex-direction:column; box-shadow:var(--shadow-float)">
         <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; padding:20px 24px; border-bottom:1px solid var(--border-subtle)">
           <div>
             <div style="font-size:var(--text-h4); font-weight:700; letter-spacing:var(--tracking-tight); color:var(--ink-900)">Site Admin</div>
@@ -475,10 +526,10 @@
               <p style="font-size:var(--text-sm); line-height:1.6; color:var(--ink-500); margin:0">Set a passcode for this browser. You'll need it each time you open the admin panel here.</p>
             </sc-if>
             <label style="display:flex; flex-direction:column; gap:6px; font-size:var(--text-sm); font-weight:500; color:var(--ink-700)">Passcode
-              <input type="password" value="{{ passValue }}" onChange="{{ onPass }}" autofocus="autofocus" style="height:44px; padding:0 14px; border:1px solid var(--border-subtle); border-radius:999px; font:inherit; font-size:15px; color:var(--ink-900); outline:none">
+              <input type="password" value="{{ passValue }}" onChange="{{ onPass }}" autofocus="autofocus" style="height:44px; padding:0 14px; border:1px solid var(--border-subtle); border-radius:999px; background:var(--surface-input); font:inherit; font-size:15px; color:var(--ink-900); outline:none">
             </label>
             <sc-if value="{{ passError }}" hint-placeholder-val="{{ false }}">
-              <span style="font-size:var(--text-sm); color:#B4325A">{{ passError }}</span>
+              <span style="font-size:var(--text-sm); color:var(--danger)">{{ passError }}</span>
             </sc-if>
             <x-import component-from-global-scope="EtechDesignSystem_684170.Button" size="md" type="submit" full-width="{{ true }}" hint-size="100%,44px">Unlock</x-import>
           </form>
@@ -495,13 +546,13 @@
             <sc-for list="{{ adminFields }}" as="f" hint-placeholder-count="3">
               <label style="display:flex; flex-direction:column; gap:6px; font-size:var(--text-sm); font-weight:500; color:var(--ink-700)">{{ f.label }}
                 <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}">
-                  <input type="text" value="{{ f.value }}" onChange="{{ f.onChange }}" style="height:42px; padding:0 14px; border:1px solid var(--border-subtle); border-radius:10px; font:inherit; font-size:14px; color:var(--ink-900); outline:none">
+                  <input type="text" value="{{ f.value }}" onChange="{{ f.onChange }}" style="height:42px; padding:0 14px; border:1px solid var(--border-subtle); border-radius:10px; background:var(--surface-input); font:inherit; font-size:14px; color:var(--ink-900); outline:none">
                 </sc-if>
                 <sc-if value="{{ f.isArea }}" hint-placeholder-val="{{ false }}">
-                  <textarea rows="4" value="{{ f.value }}" onChange="{{ f.onChange }}" style="padding:12px 14px; border:1px solid var(--border-subtle); border-radius:10px; font:inherit; font-size:14px; line-height:1.6; color:var(--ink-900); outline:none; resize:vertical"></textarea>
+                  <textarea rows="4" value="{{ f.value }}" onChange="{{ f.onChange }}" style="padding:12px 14px; border:1px solid var(--border-subtle); border-radius:10px; background:var(--surface-input); font:inherit; font-size:14px; line-height:1.6; color:var(--ink-900); outline:none; resize:vertical"></textarea>
                 </sc-if>
                 <sc-if value="{{ f.isImage }}" hint-placeholder-val="{{ false }}">
-                  <input type="text" value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="File path or URL" style="height:42px; padding:0 14px; border:1px solid var(--border-subtle); border-radius:10px; font:inherit; font-size:14px; color:var(--ink-900); outline:none">
+                  <input type="text" value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="File path or URL" style="height:42px; padding:0 14px; border:1px solid var(--border-subtle); border-radius:10px; background:var(--surface-input); font:inherit; font-size:14px; color:var(--ink-900); outline:none">
                   <input type="file" accept="{{ f.accept }}" onChange="{{ f.onFile }}" style="font-size:12px; color:var(--ink-500)">
                 </sc-if>
               </label>
@@ -512,21 +563,21 @@
                 <div style="display:flex; align-items:center; justify-content:space-between; gap:10px">
                   <span style="font-size:var(--text-sm); font-weight:600; color:var(--ink-900)">{{ g.title }}</span>
                   <span style="display:flex; gap:6px">
-                    <button type="button" aria-label="Move up" onClick="{{ g.moveUp }}" style="width:30px; height:30px; border:1px solid var(--border-subtle); border-radius:8px; background:var(--white); color:var(--ink-700); cursor:pointer">↑</button>
-                    <button type="button" aria-label="Move down" onClick="{{ g.moveDown }}" style="width:30px; height:30px; border:1px solid var(--border-subtle); border-radius:8px; background:var(--white); color:var(--ink-700); cursor:pointer">↓</button>
-                    <button type="button" aria-label="Delete" onClick="{{ g.remove }}" style="width:30px; height:30px; border:1px solid var(--border-subtle); border-radius:8px; background:var(--white); color:#B4325A; cursor:pointer">×</button>
+                    <button type="button" aria-label="Move up" onClick="{{ g.moveUp }}" style="width:30px; height:30px; border:1px solid var(--border-subtle); border-radius:8px; background:var(--surface-card); color:var(--ink-700); cursor:pointer">↑</button>
+                    <button type="button" aria-label="Move down" onClick="{{ g.moveDown }}" style="width:30px; height:30px; border:1px solid var(--border-subtle); border-radius:8px; background:var(--surface-card); color:var(--ink-700); cursor:pointer">↓</button>
+                    <button type="button" aria-label="Delete" onClick="{{ g.remove }}" style="width:30px; height:30px; border:1px solid var(--border-subtle); border-radius:8px; background:var(--surface-card); color:var(--danger); cursor:pointer">×</button>
                   </span>
                 </div>
                 <sc-for list="{{ g.fields }}" as="f" hint-placeholder-count="3">
                   <label style="display:flex; flex-direction:column; gap:6px; font-size:var(--text-xs); font-weight:500; color:var(--ink-700)">{{ f.label }}
                     <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}">
-                      <input type="text" value="{{ f.value }}" onChange="{{ f.onChange }}" style="height:38px; padding:0 12px; border:1px solid var(--border-subtle); border-radius:10px; background:var(--white); font:inherit; font-size:14px; color:var(--ink-900); outline:none">
+                      <input type="text" value="{{ f.value }}" onChange="{{ f.onChange }}" style="height:38px; padding:0 12px; border:1px solid var(--border-subtle); border-radius:10px; background:var(--surface-card); font:inherit; font-size:14px; color:var(--ink-900); outline:none">
                     </sc-if>
                     <sc-if value="{{ f.isArea }}" hint-placeholder-val="{{ false }}">
-                      <textarea rows="4" value="{{ f.value }}" onChange="{{ f.onChange }}" style="padding:10px 12px; border:1px solid var(--border-subtle); border-radius:10px; background:var(--white); font:inherit; font-size:14px; line-height:1.6; color:var(--ink-900); outline:none; resize:vertical"></textarea>
+                      <textarea rows="4" value="{{ f.value }}" onChange="{{ f.onChange }}" style="padding:10px 12px; border:1px solid var(--border-subtle); border-radius:10px; background:var(--surface-card); font:inherit; font-size:14px; line-height:1.6; color:var(--ink-900); outline:none; resize:vertical"></textarea>
                     </sc-if>
                     <sc-if value="{{ f.isImage }}" hint-placeholder-val="{{ false }}">
-                      <input type="text" value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="File path or URL" style="height:38px; padding:0 12px; border:1px solid var(--border-subtle); border-radius:10px; background:var(--white); font:inherit; font-size:14px; color:var(--ink-900); outline:none">
+                      <input type="text" value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="File path or URL" style="height:38px; padding:0 12px; border:1px solid var(--border-subtle); border-radius:10px; background:var(--surface-card); font:inherit; font-size:14px; color:var(--ink-900); outline:none">
                       <input type="file" accept="{{ f.accept }}" onChange="{{ f.onFile }}" style="font-size:12px; color:var(--ink-500)">
                     </sc-if>
                   </label>
@@ -535,18 +586,18 @@
             </sc-for>
 
             <sc-if value="{{ adminCanAdd }}" hint-placeholder-val="{{ false }}">
-              <button type="button" onClick="{{ adminAdd }}" style="align-self:flex-start; height:40px; padding:0 18px; border:1px dashed var(--violet-400); border-radius:999px; background:var(--white); color:var(--violet-600); font:inherit; font-size:14px; font-weight:600; cursor:pointer">+ {{ adminAddLabel }}</button>
+              <button type="button" onClick="{{ adminAdd }}" style="align-self:flex-start; height:40px; padding:0 18px; border:1px dashed var(--violet-400); border-radius:999px; background:var(--surface-card); color:var(--violet-600); font:inherit; font-size:14px; font-weight:600; cursor:pointer">+ {{ adminAddLabel }}</button>
             </sc-if>
           </div>
 
           <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:16px 24px; border-top:1px solid var(--border-subtle)">
             <x-import component-from-global-scope="EtechDesignSystem_684170.Button" size="md" on-click="{{ saveContent }}" hint-size="120px,42px">Save</x-import>
-            <button type="button" onClick="{{ exportContent }}" style="height:42px; padding:0 16px; border:1px solid var(--border-subtle); border-radius:999px; background:var(--white); color:var(--ink-700); font:inherit; font-size:14px; cursor:pointer">Export</button>
+            <button type="button" onClick="{{ exportContent }}" style="height:42px; padding:0 16px; border:1px solid var(--border-subtle); border-radius:999px; background:var(--surface-card); color:var(--ink-700); font:inherit; font-size:14px; cursor:pointer">Export</button>
             <label style="height:42px; display:flex; align-items:center; padding:0 16px; border:1px solid var(--border-subtle); border-radius:999px; color:var(--ink-700); font-size:14px; cursor:pointer">Import
               <input type="file" accept="application/json" onChange="{{ importContent }}" style="display:none">
             </label>
-            <button type="button" onClick="{{ resetContent }}" style="height:42px; padding:0 16px; border:1px solid var(--border-subtle); border-radius:999px; background:var(--white); color:#B4325A; font:inherit; font-size:14px; cursor:pointer">Reset</button>
-            <button type="button" onClick="{{ changePass }}" style="height:42px; padding:0 16px; border:1px solid var(--border-subtle); border-radius:999px; background:var(--white); color:var(--ink-700); font:inherit; font-size:14px; cursor:pointer">Passcode</button>
+            <button type="button" onClick="{{ resetContent }}" style="height:42px; padding:0 16px; border:1px solid var(--border-subtle); border-radius:999px; background:var(--surface-card); color:var(--danger); font:inherit; font-size:14px; cursor:pointer">Reset</button>
+            <button type="button" onClick="{{ changePass }}" style="height:42px; padding:0 16px; border:1px solid var(--border-subtle); border-radius:999px; background:var(--surface-card); color:var(--ink-700); font:inherit; font-size:14px; cursor:pointer">Passcode</button>
             <sc-if value="{{ savedNote }}" hint-placeholder-val="{{ false }}">
               <span style="font-size:var(--text-sm); font-weight:500; color:var(--violet-600)">Saved</span>
             </sc-if>
@@ -686,6 +737,17 @@ const PROJECTS = [
 
 const CONTENT_KEY = "jov-portfolio-content-v1";
 const PASS_KEY = "jov-portfolio-admin-pass-v2";
+const THEME_KEY = "jov-portfolio-theme";
+function loadTheme() {
+  try {
+    const stored = localStorage.getItem(THEME_KEY);
+    if (stored === "dark" || stored === "light") return stored;
+  } catch (e) {}
+  try {
+    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) return "dark";
+  } catch (e) {}
+  return "light";
+}
 
 const DEFAULT_CONTENT = {
   brand: { logo: "assets/logo-trimmed.png", portrait: "assets/portrait.png" },
@@ -762,7 +824,7 @@ function ringChars(label) {
 }
 
 class Component extends DCLogic {
-  state = { openId: null, fullId: null, videoId: null, menuOpen: false, expanded: false, sending: false, sendState: null, activeTool: null, content: loadContent(), adminOpen: false, adminAuthed: false, adminTab: "Hero", draft: null, pass: "", passError: "", saved: false };
+  state = { openId: null, fullId: null, videoId: null, menuOpen: false, expanded: false, sending: false, sendState: null, activeTool: null, content: loadContent(), adminOpen: false, adminAuthed: false, adminTab: "Hero", draft: null, pass: "", passError: "", saved: false, theme: loadTheme() };
 
   constructor(props) {
     super(props);
@@ -779,10 +841,12 @@ class Component extends DCLogic {
     window.addEventListener("hashchange", this.checkHash);
     this.checkHash();
     this.applySpeed();
+    document.documentElement.setAttribute("data-theme", this.state.theme);
   }
   componentDidUpdate() {
     this.applySpeed();
     document.body.style.overflow = (this.state.openId || this.state.fullId || this.state.videoId) ? "hidden" : "";
+    document.documentElement.setAttribute("data-theme", this.state.theme);
   }
   componentWillUnmount() {
     document.removeEventListener("keydown", this.onKey);
@@ -797,6 +861,12 @@ class Component extends DCLogic {
   }
 
   email() { return this.props.contactEmail ?? "icabalessolengjovelyn@gmail.com"; }
+
+  toggleTheme = () => {
+    const next = this.state.theme === "dark" ? "light" : "dark";
+    try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+    this.setState({ theme: next });
+  };
 
   submit = async (e) => {
     e.preventDefault();
@@ -1016,6 +1086,11 @@ class Component extends DCLogic {
     const model = this.adminModel();
     const tabs = ["Hero", "About", "Experience", "Tools", "Projects", "Contact", "Brand"];
     return {
+      theme: this.state.theme,
+      isDark: this.state.theme === "dark",
+      isLight: this.state.theme !== "dark",
+      themeToggleLabel: this.state.theme === "dark" ? "Switch to light mode" : "Switch to dark mode",
+      toggleTheme: this.toggleTheme,
       logo: c.brand.logo,
       portrait: c.brand.portrait,
       heroBadge: c.hero.badge,
