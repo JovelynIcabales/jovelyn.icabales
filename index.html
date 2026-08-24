@@ -652,6 +652,34 @@
 <script type="text/x-dc" data-dc-script data-props="{&quot;contactEmail&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;icabalessolengjovelyn@gmail.com&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Content&quot;},&quot;showMarquee&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;marqueeSeconds&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:34,&quot;min&quot;:10,&quot;max&quot;:80,&quot;step&quot;:2,&quot;unit&quot;:&quot;s&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Layout&quot;}}">
 const PROJECTS = [
   {
+    id: "all-season",
+    video: "assets/work/all-season-comfort.mp4",
+    fullPage: "assets/work/all-season-comfort-full.png",
+    tag: "HVAC",
+    title: "All Season Comfort",
+    image: "assets/work/all-season-comfort.png",
+    description: "Family-owned heating and air conditioning company in Theresa, Wisconsin. Dark green build with a product-render hero, rating bar, and a four-column feature strip that stacks into a scannable list on mobile.",
+    link: "https://www.allseasoncomfortheatingandac.com/"
+  },
+  {
+    id: "ez-contractors",
+    tag: "Constructions",
+    title: "EZ Contractors",
+    image: "assets/work/ez-contractors.png",
+    description: "A professional renovation and construction website for a Barrie, Ontario-based contractor. The website showcases their residential and commercial renovation services, including home remodeling, patios and decks, fencing, interior design, painting, drywall repair, and driveway paving. It was designed to present their services clearly while making it easy for potential clients to request a free estimate.",
+    link: "https://www.ezcontractors.ca/"
+  },
+  {
+    id: "iron-city",
+    video: "assets/work/iron-city.mp4",
+    fullPage: "assets/work/iron-city-full.png",
+    tag: "Auto Restoration",
+    title: "Iron City Rods & Customs",
+    image: "assets/work/iron-city.png",
+    description: "Custom car restoration shop in Punta Gorda, Florida. Dark, high-contrast build with a review bar above the nav, a cut-out hero vehicle, and a scrolling trust strip of service points — all assembled in Duda with custom HTML and CSS where the default components fell short.",
+    link: "https://www.ironcityrodsandcustoms.com/"
+  },
+  {
     id: "akuna-pool",
     tag: "Pools & Outdoor",
     title: "Akuna Pool Co.",
@@ -694,16 +722,6 @@ const PROJECTS = [
     link: ""
   },
   {
-    id: "iron-city",
-    video: "assets/work/iron-city.mp4",
-    fullPage: "assets/work/iron-city-full.png",
-    tag: "Auto Restoration",
-    title: "Iron City Rods & Customs",
-    image: "assets/work/iron-city.png",
-    description: "Custom car restoration shop in Punta Gorda, Florida. Dark, high-contrast build with a review bar above the nav, a cut-out hero vehicle, and a scrolling trust strip of service points — all assembled in Duda with custom HTML and CSS where the default components fell short.",
-    link: ""
-  },
-  {
     id: "bridal-bliss",
     video: "assets/work/bridal-bliss.mp4",
     fullPage: "assets/work/bridal-bliss-full.jpg",
@@ -721,16 +739,6 @@ const PROJECTS = [
     title: "Wild Lotus Floral Design",
     image: "assets/work/wild-lotus.png",
     description: "Luxury wedding and event florist in Barrie, Ontario. Soft, editorial build — script display type over a full-bleed arrangement photo, a review bar above the nav, and a packages and gallery structure that keeps a long service list easy to move through.",
-    link: ""
-  },
-  {
-    id: "all-season",
-    video: "assets/work/all-season-comfort.mp4",
-    fullPage: "assets/work/all-season-comfort-full.png",
-    tag: "HVAC",
-    title: "All Season Comfort",
-    image: "assets/work/all-season-comfort.png",
-    description: "Family-owned heating and air conditioning company in Theresa, Wisconsin. Dark green build with a product-render hero, rating bar, and a four-column feature strip that stacks into a scannable list on mobile.",
     link: ""
   },
   {
@@ -791,9 +799,9 @@ function loadTheme() {
 }
 
 const DEFAULT_CONTENT = {
-  brand: { logo: "assets/logo-trimmed.png", logoDark: "", portrait: "assets/portrait.png" },
+  brand: { logo: "assets/logo-trimmed.png", logoDark: "assets/logo-dark.png", portrait: "assets/portrait.png" },
   hero: {
-    badge: "Web Designer \u00B7 UI/UX",
+    badge: "Website Specialist \u00B7 Web Designer \u00B7 UI/UX",
     titleLead: "Building reliable,\u00A0",
     titleAccent: "high-quality websites for every client",
     lead: "CMS and front-end developer with 200+ delivered website projects \u2014 new builds, rebuilds, upgrades and reworks in Duda, with custom HTML and CSS where the defaults stop."
@@ -843,7 +851,9 @@ const DEFAULT_CONTENT = {
     phoneHref: "tel:+639360835197",
     linkedin: "https://linkedin.com/in/jsicabales"
   },
-  certifications: [],
+  certifications: [
+    { title: "Certified Duda Web Designer", issuer: "", seal: "", icon: "", body: "", image: "assets/certs/duda-web-design.png" }
+  ],
   projects: PROJECTS
 };
 
