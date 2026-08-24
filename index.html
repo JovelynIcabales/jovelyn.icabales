@@ -19,7 +19,7 @@
 <script src="_ds/etech-design-system-68417009-1dd4-40e4-8da7-e089ab1c1358/_ds_bundle.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 
   const firebaseConfig = {
@@ -36,6 +36,9 @@
   const db = getFirestore(app);
   const auth = getAuth(app);
   const CONTENT_DOC = doc(db, "site", "content");
+  // Firestore caps a document at 1 MiB, so uploaded images can't live inside the
+  // content doc — each one gets its own doc here and the content stores "img:<id>".
+  const IMAGES_COL = collection(db, "site", "content", "images");
 
   window.__fb = {
     getContent: async function () {
@@ -44,6 +47,18 @@
     },
     saveContent: async function (data) {
       await setDoc(CONTENT_DOC, data);
+    },
+    getImages: async function () {
+      const snap = await getDocs(IMAGES_COL);
+      const out = {};
+      snap.forEach((d) => { out[d.id] = (d.data() || {}).data || ""; });
+      return out;
+    },
+    saveImage: async function (id, dataUrl) {
+      await setDoc(doc(IMAGES_COL, id), { data: dataUrl });
+    },
+    deleteImage: async function (id) {
+      await deleteDoc(doc(IMAGES_COL, id));
     },
     signIn: function (email, password) {
       return signInWithEmailAndPassword(auth, email, password);
@@ -660,6 +675,9 @@
                     </sc-if>
                     <sc-if value="{{ f.isImage }}" hint-placeholder-val="{{ false }}">
                       <input type="text" value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="File path or URL" style="height:38px; padding:0 12px; border:1px solid var(--border-subtle); border-radius:10px; background:var(--surface-card); font:inherit; font-size:14px; color:var(--ink-900); outline:none">
+                      <sc-if value="{{ f.preview }}" hint-placeholder-val="{{ false }}">
+                        <img src="{{ f.preview }}" alt="" style="max-width:120px; max-height:80px; width:auto; height:auto; object-fit:contain; border:1px solid var(--border-subtle); border-radius:8px; background:var(--surface-input)">
+                      </sc-if>
                       <input type="file" accept="{{ f.accept }}" onChange="{{ f.onFile }}" style="font-size:12px; color:var(--ink-500)">
                     </sc-if>
                   </label>
@@ -673,7 +691,7 @@
           </div>
 
           <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:16px 24px; border-top:1px solid var(--border-subtle)">
-            <x-import component-from-global-scope="EtechDesignSystem_684170.Button" size="md" on-click="{{ saveContent }}" hint-size="120px,42px">Save</x-import>
+            <x-import component-from-global-scope="EtechDesignSystem_684170.Button" size="md" on-click="{{ saveContent }}" disabled="{{ saving }}" hint-size="120px,42px">{{ saveLabel }}</x-import>
             <button type="button" onClick="{{ exportContent }}" style="height:42px; padding:0 16px; border:1px solid var(--border-subtle); border-radius:999px; background:var(--surface-card); color:var(--ink-700); font:inherit; font-size:14px; cursor:pointer">Export</button>
             <label style="height:42px; display:flex; align-items:center; padding:0 16px; border:1px solid var(--border-subtle); border-radius:999px; color:var(--ink-700); font-size:14px; cursor:pointer">Import
               <input type="file" accept="application/json" onChange="{{ importContent }}" style="display:none">
@@ -911,6 +929,74 @@ const DEFAULT_CONTENT = {
 };
 
 function deepCopy(v) { return JSON.parse(JSON.stringify(v)); }
+
+const IMG_MAX_WIDTH = 1600;
+const IMG_MAX_PIXELS = 4e6;
+const IMG_BUDGET = 700000;
+function isDataImage(v) { return typeof v === "string" && v.indexOf("data:image/") === 0; }
+function newImageId() { return "img_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+
+// Re-encodes an uploaded image small enough to fit in its own Firestore doc.
+// Full-size camera/screenshot PNGs are megabytes; WebP at display size is a
+// fraction of that and keeps transparency (needed for the logos and badges).
+function shrinkImage(dataUrl) {
+  return new Promise((resolve) => {
+    if (!isDataImage(dataUrl) || dataUrl.indexOf("data:image/svg") === 0) { resolve(dataUrl); return; }
+    const img = new Image();
+    img.onload = () => {
+      let w = img.naturalWidth, h = img.naturalHeight;
+      if (!w || !h) { resolve(dataUrl); return; }
+      let scale = Math.min(1, IMG_MAX_WIDTH / w);
+      if (w * h * scale * scale > IMG_MAX_PIXELS) scale = Math.sqrt(IMG_MAX_PIXELS / (w * h));
+      w = Math.max(1, Math.round(w * scale));
+      h = Math.max(1, Math.round(h * scale));
+      const cv = document.createElement("canvas");
+      cv.width = w; cv.height = h;
+      cv.getContext("2d").drawImage(img, 0, 0, w, h);
+      let best = "";
+      for (const q of [0.85, 0.75, 0.65, 0.55]) {
+        const out = cv.toDataURL("image/webp", q);
+        if (out.indexOf("data:image/webp") !== 0) { best = ""; break; }
+        best = out;
+        if (out.length <= IMG_BUDGET) break;
+      }
+      if (!best) best = cv.toDataURL("image/png");
+      resolve(best && best.length < dataUrl.length ? best : dataUrl);
+    };
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
+}
+
+// Moves every inline data: URI in the draft into its own image doc, leaving an
+// "img:<id>" reference behind. Also covers content saved before this change.
+async function migrateInlineImages(node, images, pending) {
+  const handle = async (v) => {
+    if (!isDataImage(v)) return v;
+    const small = await shrinkImage(v);
+    const id = newImageId();
+    images[id] = small;
+    pending.push(id);
+    return "img:" + id;
+  };
+  if (Array.isArray(node)) {
+    for (let i = 0; i < node.length; i++) {
+      if (typeof node[i] === "string") node[i] = await handle(node[i]);
+      else await migrateInlineImages(node[i], images, pending);
+    }
+  } else if (node && typeof node === "object") {
+    for (const k of Object.keys(node)) {
+      if (typeof node[k] === "string") node[k] = await handle(node[k]);
+      else await migrateInlineImages(node[k], images, pending);
+    }
+  }
+}
+
+function collectImageRefs(node, out) {
+  if (typeof node === "string") { if (node.indexOf("img:") === 0) out.add(node.slice(4)); return; }
+  if (Array.isArray(node)) { node.forEach((v) => collectImageRefs(v, out)); return; }
+  if (node && typeof node === "object") { Object.keys(node).forEach((k) => collectImageRefs(node[k], out)); }
+}
 function loadContent() {
   const base = deepCopy(DEFAULT_CONTENT);
   try {
@@ -929,7 +1015,7 @@ function ringChars(label) {
 }
 
 class Component extends DCLogic {
-  state = { openId: null, fullId: null, videoId: null, menuOpen: false, expanded: false, sending: false, sendState: null, activeTool: null, content: loadContent(), adminOpen: false, adminAuthed: false, authUser: null, cloudReady: null, adminTab: "Hero", draft: null, email: "", pass: "", passError: "", signingIn: false, saved: false, theme: loadTheme() };
+  state = { openId: null, fullId: null, videoId: null, menuOpen: false, expanded: false, sending: false, sendState: null, activeTool: null, content: loadContent(), images: {}, cloudImageIds: [], dirty: false, adminOpen: false, adminAuthed: false, authUser: null, cloudReady: null, adminTab: "Hero", draft: null, email: "", pass: "", passError: "", signingIn: false, saving: false, saved: false, theme: loadTheme() };
 
   constructor(props) {
     super(props);
@@ -944,10 +1030,12 @@ class Component extends DCLogic {
     document.addEventListener("keydown", this.onKey);
     document.addEventListener("keydown", this.onAdminKey);
     window.addEventListener("hashchange", this.checkHash);
+    // Start the cloud fetch before checkHash, which can open the admin panel
+    // immediately and needs this promise to wait on.
+    this.cloudPromise = this.initCloud();
     this.checkHash();
     this.applySpeed();
     document.documentElement.setAttribute("data-theme", this.state.theme);
-    this.initCloud();
   }
   componentDidUpdate() {
     this.applySpeed();
@@ -1017,17 +1105,34 @@ class Component extends DCLogic {
       const authed = !!(user && user.uid === ADMIN_UID);
       this.setState({ authUser: authed ? user : null, adminAuthed: authed });
     });
-    try {
-      const data = await fb.getContent();
-      if (data) this.setState({ content: Object.assign(deepCopy(DEFAULT_CONTENT), data) });
-    } catch (err) {}
+    // Settled separately so a failure on one (e.g. security rules not yet
+    // covering the images subcollection) can't blank out the other.
+    const [contentRes, imagesRes] = await Promise.allSettled([fb.getContent(), fb.getImages()]);
+    const next = {};
+    if (contentRes.status === "fulfilled" && contentRes.value) {
+      next.content = Object.assign(deepCopy(DEFAULT_CONTENT), contentRes.value);
+    }
+    if (imagesRes.status === "fulfilled" && imagesRes.value) {
+      next.images = imagesRes.value;
+      next.cloudImageIds = Object.keys(imagesRes.value);
+    }
+    if (Object.keys(next).length) this.setState(next);
   };
-  openAdmin = () => {
-    this.setState({ adminOpen: true, draft: deepCopy(this.state.content), email: "", pass: "", passError: "" });
+  resolveImg = (v) => {
+    if (typeof v === "string" && v.indexOf("img:") === 0) return this.state.images[v.slice(4)] || "";
+    return v;
+  };
+  openAdmin = async () => {
+    this.setState((s) => ({ adminOpen: true, draft: s.draft || deepCopy(s.content), email: "", pass: "", passError: "" }));
+    // #admin and the keyboard shortcut fire on mount, before the cloud content
+    // has arrived. Adopt it once it lands, or a save would write the built-in
+    // defaults straight over whatever is already published.
+    try { await this.cloudPromise; } catch (err) {}
+    this.setState((s) => (s.dirty ? null : { draft: deepCopy(s.content) }));
   };
   closeAdmin = () => {
     if (window.location.hash.toLowerCase() === "#admin") history.replaceState(null, "", window.location.pathname + window.location.search);
-    this.setState({ adminOpen: false, draft: null, saved: false, email: "", pass: "", passError: "" });
+    this.setState({ adminOpen: false, draft: null, dirty: false, saved: false, email: "", pass: "", passError: "" });
   };
   submitSignIn = async (e) => {
     e.preventDefault();
@@ -1055,25 +1160,53 @@ class Component extends DCLogic {
   upd = (fn) => {
     const next = deepCopy(this.state.draft || this.state.content);
     fn(next);
-    this.setState({ draft: next, saved: false });
+    this.setState({ draft: next, dirty: true, saved: false });
   };
   saveContent = async () => {
-    const next = this.state.draft || this.state.content;
-    if (window.__fb && this.state.adminAuthed) {
-      try {
-        await window.__fb.saveContent(next);
-        this.setState({ content: deepCopy(next), saved: true, passError: "" });
-      } catch (err) {
-        this.setState({ saved: false, passError: "Couldn't save to the cloud — check your connection and try again." });
-      }
+    if (this.state.saving) return;
+    const next = deepCopy(this.state.draft || this.state.content);
+    if (!window.__fb || !this.state.adminAuthed) {
+      try { localStorage.setItem(CONTENT_KEY, JSON.stringify(next)); } catch (err) {}
+      this.setState({ content: next, saved: false, passError: "Cloud unavailable — saved on this device only, so it won't show anywhere else." });
       return;
     }
-    try { localStorage.setItem(CONTENT_KEY, JSON.stringify(next)); } catch (err) {}
-    this.setState({ content: deepCopy(next), saved: false, passError: "Cloud unavailable — saved locally on this device only." });
+    this.setState({ saving: true, saved: false, passError: "" });
+    try {
+      const images = Object.assign({}, this.state.images);
+      const pending = [];
+      await migrateInlineImages(next, images, pending);
+
+      // Upload every image the saved content still points at but the cloud
+      // doesn't have yet — both freshly picked files and just-migrated blobs.
+      const used = new Set();
+      collectImageRefs(next, used);
+      const inCloud = new Set(this.state.cloudImageIds);
+      for (const id of used) {
+        if (images[id] && !inCloud.has(id)) await window.__fb.saveImage(id, images[id]);
+      }
+      await window.__fb.saveContent(next);
+
+      for (const id of this.state.cloudImageIds) {
+        if (!used.has(id)) { try { await window.__fb.deleteImage(id); } catch (err) {} }
+      }
+      const keptIds = Object.keys(images).filter((id) => used.has(id));
+      const kept = {};
+      keptIds.forEach((id) => { kept[id] = images[id]; });
+
+      // The old device-only copy is now superseded by the cloud; drop it so a
+      // stale local blob can never shadow what everyone else sees.
+      try { localStorage.removeItem(CONTENT_KEY); } catch (err) {}
+      this.setState({ content: next, draft: deepCopy(next), images: kept, cloudImageIds: keptIds, dirty: false, saving: false, saved: true, passError: "" });
+    } catch (err) {
+      const msg = err && err.code === "permission-denied"
+        ? "Not allowed to save — check the Firestore security rules."
+        : "Couldn't save: " + ((err && err.message) || "unknown error");
+      this.setState({ saving: false, saved: false, passError: msg });
+    }
   };
   resetContent = async () => {
     const base = deepCopy(DEFAULT_CONTENT);
-    this.setState({ content: base, draft: deepCopy(base), saved: true });
+    this.setState({ content: base, draft: deepCopy(base), dirty: true, saved: true });
     if (window.__fb && this.state.adminAuthed) {
       try { await window.__fb.saveContent(base); } catch (err) {}
     } else {
@@ -1099,20 +1232,40 @@ class Component extends DCLogic {
     const d = this.state.draft || this.state.content;
     return {
       label: label,
-      value: get(d) == null ? "" : get(d),
+      value: type === "image" ? this.imgFieldLabel(get(d)) : (get(d) == null ? "" : get(d)),
+      preview: type === "image" ? this.resolveImg(get(d)) : "",
       isText: type !== "area" && type !== "image",
       isArea: type === "area",
       isImage: type === "image",
       accept: accept || "image/*",
-      onChange: (e) => this.upd(n => set(n, e.target.value)),
+      onChange: (e) => {
+        const v = e.target.value;
+        // The box shows a stand-in for uploaded blobs; don't write that back as a path.
+        if (type === "image" && v === "(uploaded image)") return;
+        this.upd(n => set(n, v));
+      },
       onFile: (e) => {
         const file = e.target.files && e.target.files[0];
         if (!file) return;
         const r = new FileReader();
-        r.onload = () => this.upd(n => set(n, r.result));
+        r.onload = async () => {
+          const small = await shrinkImage(r.result);
+          const id = newImageId();
+          this.setState(
+            (s) => ({ images: Object.assign({}, s.images, { [id]: small }) }),
+            () => this.upd(n => set(n, "img:" + id))
+          );
+        };
         r.readAsDataURL(file);
       }
     };
+  }
+
+  imgFieldLabel(v) {
+    if (typeof v !== "string" || !v) return "";
+    if (v.indexOf("img:") === 0) return "(uploaded image)";
+    if (isDataImage(v)) return "(uploaded image)";
+    return v;
   }
 
   listControls(key, index, blank) {
@@ -1226,7 +1379,8 @@ class Component extends DCLogic {
 
   renderVals() {
     const c = this.state.content;
-    const all = c.projects || [];
+    const R = this.resolveImg;
+    const all = (c.projects || []).map((p) => (p && (p.image || p.fullPage) ? Object.assign({}, p, { image: R(p.image), fullPage: R(p.fullPage) }) : p));
     const open = all.find((p) => p.id === this.state.openId);
     const full = all.find((p) => p.id === this.state.fullId);
     const vid = all.find((p) => p.id === this.state.videoId);
@@ -1239,8 +1393,8 @@ class Component extends DCLogic {
       isLight: this.state.theme !== "dark",
       themeToggleLabel: this.state.theme === "dark" ? "Switch to light mode" : "Switch to dark mode",
       toggleTheme: this.toggleTheme,
-      logo: (this.state.theme === "dark" && c.brand.logoDark) ? c.brand.logoDark : c.brand.logo,
-      portrait: c.brand.portrait,
+      logo: R((this.state.theme === "dark" && c.brand.logoDark) ? c.brand.logoDark : c.brand.logo),
+      portrait: R(c.brand.portrait),
       heroBadge: c.hero.badge,
       heroTitleLead: c.hero.titleLead,
       heroTitleAccent: c.hero.titleAccent,
@@ -1267,6 +1421,7 @@ class Component extends DCLogic {
       linkedinHref: c.contact.linkedin,
       certifications: (c.certifications || []).map((cert, i) => ({
         ...cert,
+        image: R(cert.image),
         num: String(i + 1).padStart(2, "0"),
         icon: cert.icon || "award",
         hasCustomImage: !!cert.image,
@@ -1294,6 +1449,8 @@ class Component extends DCLogic {
       adminCanAdd: !!model.add,
       adminAdd: model.add || (() => {}),
       saveContent: this.saveContent,
+      saveLabel: this.state.saving ? "Saving…" : "Save",
+      saving: this.state.saving,
       signOutAdmin: this.signOutAdmin,
       resetContent: this.resetContent,
       exportContent: this.exportContent,
