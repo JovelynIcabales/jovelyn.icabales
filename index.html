@@ -17,6 +17,46 @@
 <link rel="stylesheet" href="_ds/etech-design-system-68417009-1dd4-40e4-8da7-e089ab1c1358/tokens/base.css">
 <link rel="stylesheet" href="_ds/etech-design-system-68417009-1dd4-40e4-8da7-e089ab1c1358/styles.css">
 <script src="_ds/etech-design-system-68417009-1dd4-40e4-8da7-e089ab1c1358/_ds_bundle.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCM9M1EMe_D0FzUDvv89luPY84aksWhQ3c",
+    authDomain: "portfolio-backend-f0040.firebaseapp.com",
+    projectId: "portfolio-backend-f0040",
+    storageBucket: "portfolio-backend-f0040.firebasestorage.app",
+    messagingSenderId: "576149421985",
+    appId: "1:576149421985:web:1c45e56d13768694a8d5e0",
+    measurementId: "G-0R5LTKSLWD"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+  const CONTENT_DOC = doc(db, "site", "content");
+
+  window.__fb = {
+    getContent: async function () {
+      const snap = await getDoc(CONTENT_DOC);
+      return snap.exists() ? snap.data() : null;
+    },
+    saveContent: async function (data) {
+      await setDoc(CONTENT_DOC, data);
+    },
+    signIn: function (email, password) {
+      return signInWithEmailAndPassword(auth, email, password);
+    },
+    signOutUser: function () {
+      return signOut(auth);
+    },
+    onAuthChanged: function (cb) {
+      return onAuthStateChanged(auth, cb);
+    }
+  };
+  window.dispatchEvent(new Event("__fb_ready"));
+</script>
 <style>
   /* Etech tokens re-pointed to the existing blue palette */
   :root {
@@ -556,23 +596,24 @@
         <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; padding:20px 24px; border-bottom:1px solid var(--border-subtle)">
           <div>
             <div style="font-size:var(--text-h4); font-weight:700; letter-spacing:var(--tracking-tight); color:var(--ink-900)">Site Admin</div>
-            <div style="font-size:var(--text-xs); color:var(--ink-400); margin-top:2px">Private to this browser</div>
+            <div style="font-size:var(--text-xs); color:var(--ink-400); margin-top:2px">{{ cloudStatusLabel }}</div>
           </div>
           <button type="button" aria-label="Close admin" onClick="{{ closeAdmin }}" style="width:40px; height:40px; border:0; border-radius:999px; background:var(--ink-050); color:var(--ink-700); font-size:20px; line-height:1; cursor:pointer">×</button>
         </div>
 
         <sc-if value="{{ adminLocked }}" hint-placeholder-val="{{ true }}">
-          <form onSubmit="{{ submitPass }}" style="display:flex; flex-direction:column; gap:14px; padding:28px 24px">
-            <sc-if value="{{ adminFirstRun }}" hint-placeholder-val="{{ false }}">
-              <p style="font-size:var(--text-sm); line-height:1.6; color:var(--ink-500); margin:0">Set a passcode for this browser. You'll need it each time you open the admin panel here.</p>
-            </sc-if>
-            <label style="display:flex; flex-direction:column; gap:6px; font-size:var(--text-sm); font-weight:500; color:var(--ink-700)">Passcode
-              <input type="password" value="{{ passValue }}" onChange="{{ onPass }}" autofocus="autofocus" style="height:44px; padding:0 14px; border:1px solid var(--border-subtle); border-radius:999px; background:var(--surface-input); font:inherit; font-size:15px; color:var(--ink-900); outline:none">
+          <form onSubmit="{{ submitSignIn }}" style="display:flex; flex-direction:column; gap:14px; padding:28px 24px">
+            <p style="font-size:var(--text-sm); line-height:1.6; color:var(--ink-500); margin:0">Sign in with your admin account to edit this site. Changes go live for everyone once saved.</p>
+            <label style="display:flex; flex-direction:column; gap:6px; font-size:var(--text-sm); font-weight:500; color:var(--ink-700)">Email
+              <input type="email" value="{{ emailValue }}" onChange="{{ onEmailChange }}" autofocus="autofocus" style="height:44px; padding:0 14px; border:1px solid var(--border-subtle); border-radius:999px; background:var(--surface-input); font:inherit; font-size:15px; color:var(--ink-900); outline:none">
+            </label>
+            <label style="display:flex; flex-direction:column; gap:6px; font-size:var(--text-sm); font-weight:500; color:var(--ink-700)">Password
+              <input type="password" value="{{ passValue }}" onChange="{{ onPass }}" style="height:44px; padding:0 14px; border:1px solid var(--border-subtle); border-radius:999px; background:var(--surface-input); font:inherit; font-size:15px; color:var(--ink-900); outline:none">
             </label>
             <sc-if value="{{ passError }}" hint-placeholder-val="{{ false }}">
               <span style="font-size:var(--text-sm); color:var(--danger)">{{ passError }}</span>
             </sc-if>
-            <x-import component-from-global-scope="EtechDesignSystem_684170.Button" size="md" type="submit" full-width="{{ true }}" hint-size="100%,44px">Unlock</x-import>
+            <x-import component-from-global-scope="EtechDesignSystem_684170.Button" size="md" type="submit" disabled="{{ signingIn }}" full-width="{{ true }}" hint-size="100%,44px">{{ signInLabel }}</x-import>
           </form>
         </sc-if>
 
@@ -638,9 +679,12 @@
               <input type="file" accept="application/json" onChange="{{ importContent }}" style="display:none">
             </label>
             <button type="button" onClick="{{ resetContent }}" style="height:42px; padding:0 16px; border:1px solid var(--border-subtle); border-radius:999px; background:var(--surface-card); color:var(--danger); font:inherit; font-size:14px; cursor:pointer">Reset</button>
-            <button type="button" onClick="{{ changePass }}" style="height:42px; padding:0 16px; border:1px solid var(--border-subtle); border-radius:999px; background:var(--surface-card); color:var(--ink-700); font:inherit; font-size:14px; cursor:pointer">Passcode</button>
+            <button type="button" onClick="{{ signOutAdmin }}" style="height:42px; padding:0 16px; border:1px solid var(--border-subtle); border-radius:999px; background:var(--surface-card); color:var(--ink-700); font:inherit; font-size:14px; cursor:pointer">Sign Out</button>
             <sc-if value="{{ savedNote }}" hint-placeholder-val="{{ false }}">
               <span style="font-size:var(--text-sm); font-weight:500; color:var(--violet-600)">Saved</span>
+            </sc-if>
+            <sc-if value="{{ passError }}" hint-placeholder-val="{{ false }}">
+              <span style="font-size:var(--text-sm); font-weight:500; color:var(--danger)">{{ passError }}</span>
             </sc-if>
           </div>
         </sc-if>
@@ -785,8 +829,17 @@ const PROJECTS = [
 
 
 const CONTENT_KEY = "jov-portfolio-content-v1";
-const PASS_KEY = "jov-portfolio-admin-pass-v2";
 const THEME_KEY = "jov-portfolio-theme";
+const ADMIN_UID = "RMHagE4BABZKzALt4NHKm9MkHZ33";
+function waitForFirebase(timeoutMs) {
+  return new Promise((resolve) => {
+    if (window.__fb) { resolve(window.__fb); return; }
+    let done = false;
+    const onReady = () => { if (done) return; done = true; window.removeEventListener("__fb_ready", onReady); resolve(window.__fb); };
+    window.addEventListener("__fb_ready", onReady);
+    setTimeout(() => { if (done) return; done = true; window.removeEventListener("__fb_ready", onReady); resolve(window.__fb || null); }, timeoutMs || 8000);
+  });
+}
 function loadTheme() {
   try {
     const stored = localStorage.getItem(THEME_KEY);
@@ -876,7 +929,7 @@ function ringChars(label) {
 }
 
 class Component extends DCLogic {
-  state = { openId: null, fullId: null, videoId: null, menuOpen: false, expanded: false, sending: false, sendState: null, activeTool: null, content: loadContent(), adminOpen: false, adminAuthed: false, adminTab: "Hero", draft: null, pass: "", passError: "", saved: false, theme: loadTheme() };
+  state = { openId: null, fullId: null, videoId: null, menuOpen: false, expanded: false, sending: false, sendState: null, activeTool: null, content: loadContent(), adminOpen: false, adminAuthed: false, authUser: null, cloudReady: null, adminTab: "Hero", draft: null, email: "", pass: "", passError: "", signingIn: false, saved: false, theme: loadTheme() };
 
   constructor(props) {
     super(props);
@@ -894,6 +947,7 @@ class Component extends DCLogic {
     this.checkHash();
     this.applySpeed();
     document.documentElement.setAttribute("data-theme", this.state.theme);
+    this.initCloud();
   }
   componentDidUpdate() {
     this.applySpeed();
@@ -955,51 +1009,76 @@ class Component extends DCLogic {
   onAdminKey = (e) => {
     if (e.altKey && e.shiftKey && (e.key === "A" || e.key === "a")) { e.preventDefault(); this.openAdmin(); }
   };
+  initCloud = async () => {
+    const fb = await waitForFirebase(8000);
+    if (!fb) { this.setState({ cloudReady: false }); return; }
+    this.setState({ cloudReady: true });
+    fb.onAuthChanged((user) => {
+      const authed = !!(user && user.uid === ADMIN_UID);
+      this.setState({ authUser: authed ? user : null, adminAuthed: authed });
+    });
+    try {
+      const data = await fb.getContent();
+      if (data) this.setState({ content: Object.assign(deepCopy(DEFAULT_CONTENT), data) });
+    } catch (err) {}
+  };
   openAdmin = () => {
-    const stored = localStorage.getItem(PASS_KEY);
-    this.setState({ adminOpen: true, adminAuthed: !stored ? false : this.state.adminAuthed, draft: deepCopy(this.state.content) });
+    this.setState({ adminOpen: true, draft: deepCopy(this.state.content), email: "", pass: "", passError: "" });
   };
   closeAdmin = () => {
     if (window.location.hash.toLowerCase() === "#admin") history.replaceState(null, "", window.location.pathname + window.location.search);
-    this.setState({ adminOpen: false, draft: null, saved: false, pass: "", passError: "" });
+    this.setState({ adminOpen: false, draft: null, saved: false, email: "", pass: "", passError: "" });
   };
-  submitPass = (e) => {
+  submitSignIn = async (e) => {
     e.preventDefault();
-    const stored = localStorage.getItem(PASS_KEY);
-    const entered = (this.state.pass || "").trim();
-    if (!entered) { this.setState({ passError: "Enter a passcode." }); return; }
-    if (!stored) { localStorage.setItem(PASS_KEY, entered); this.setState({ adminAuthed: true, pass: "", passError: "" }); return; }
-    if (entered === stored) this.setState({ adminAuthed: true, pass: "", passError: "" });
-    else this.setState({ passError: "That passcode doesn't match." });
+    if (!window.__fb) { this.setState({ passError: "Cloud service is still loading — try again in a moment." }); return; }
+    const email = (this.state.email || "").trim();
+    const pw = this.state.pass || "";
+    if (!email || !pw) { this.setState({ passError: "Enter your email and password." }); return; }
+    this.setState({ signingIn: true, passError: "" });
+    try {
+      const cred = await window.__fb.signIn(email, pw);
+      if (!cred.user || cred.user.uid !== ADMIN_UID) {
+        await window.__fb.signOutUser();
+        this.setState({ signingIn: false, passError: "This account isn't authorized for admin access." });
+        return;
+      }
+      this.setState({ signingIn: false, email: "", pass: "", passError: "" });
+    } catch (err) {
+      this.setState({ signingIn: false, passError: "Sign-in failed — check your email and password." });
+    }
   };
-  changePass = () => {
-    const stored = localStorage.getItem(PASS_KEY) || "";
-    const current = window.prompt("Current passcode");
-    if (current === null) return;
-    if (current.trim() !== stored) { window.alert("That passcode doesn't match."); return; }
-    const next = window.prompt("New passcode");
-    if (next === null) return;
-    if (!next.trim()) { window.alert("Passcode can't be empty."); return; }
-    localStorage.setItem(PASS_KEY, next.trim());
-    window.alert("Passcode updated.");
+  signOutAdmin = () => {
+    if (window.__fb) window.__fb.signOutUser();
+    this.setState({ adminAuthed: false, authUser: null });
   };
   upd = (fn) => {
     const next = deepCopy(this.state.draft || this.state.content);
     fn(next);
     this.setState({ draft: next, saved: false });
   };
-  saveContent = () => {
+  saveContent = async () => {
     const next = this.state.draft || this.state.content;
-    try { localStorage.setItem(CONTENT_KEY, JSON.stringify(next)); } catch (err) {
-      this.setState({ passError: "Storage full — use smaller images or link them by URL." });
+    if (window.__fb && this.state.adminAuthed) {
+      try {
+        await window.__fb.saveContent(next);
+        this.setState({ content: deepCopy(next), saved: true, passError: "" });
+      } catch (err) {
+        this.setState({ saved: false, passError: "Couldn't save to the cloud — check your connection and try again." });
+      }
       return;
     }
-    this.setState({ content: deepCopy(next), saved: true });
+    try { localStorage.setItem(CONTENT_KEY, JSON.stringify(next)); } catch (err) {}
+    this.setState({ content: deepCopy(next), saved: false, passError: "Cloud unavailable — saved locally on this device only." });
   };
-  resetContent = () => {
-    localStorage.removeItem(CONTENT_KEY);
+  resetContent = async () => {
     const base = deepCopy(DEFAULT_CONTENT);
     this.setState({ content: base, draft: deepCopy(base), saved: true });
+    if (window.__fb && this.state.adminAuthed) {
+      try { await window.__fb.saveContent(base); } catch (err) {}
+    } else {
+      try { localStorage.removeItem(CONTENT_KEY); } catch (err) {}
+    }
   };
   exportContent = () => {
     const data = JSON.stringify(this.state.draft || this.state.content, null, 2);
@@ -1197,11 +1276,15 @@ class Component extends DCLogic {
       adminOpen: this.state.adminOpen,
       adminAuthed: this.state.adminOpen && this.state.adminAuthed,
       adminLocked: this.state.adminOpen && !this.state.adminAuthed,
-      adminFirstRun: !localStorage.getItem(PASS_KEY),
+      cloudStatusLabel: this.state.adminAuthed ? "Signed in — changes go live for everyone" : (this.state.cloudReady === false ? "Cloud unavailable — sign-in disabled" : "Sign in to make live edits"),
+      emailValue: this.state.email,
+      onEmailChange: (e) => this.setState({ email: e.target.value }),
       passValue: this.state.pass,
       passError: this.state.passError,
       onPass: (e) => this.setState({ pass: e.target.value }),
-      submitPass: this.submitPass,
+      submitSignIn: this.submitSignIn,
+      signingIn: this.state.signingIn,
+      signInLabel: this.state.signingIn ? "Signing In…" : "Sign In",
       closeAdmin: this.closeAdmin,
       adminTabs: tabs.map((t) => ({ label: t, active: this.state.adminTab === t, bg: this.state.adminTab === t ? "var(--violet-600)" : "var(--ink-050)", fg: this.state.adminTab === t ? "#FFFFFF" : "var(--ink-700)", select: () => this.setState({ adminTab: t }) })),
       adminFields: model.fields,
@@ -1211,7 +1294,7 @@ class Component extends DCLogic {
       adminCanAdd: !!model.add,
       adminAdd: model.add || (() => {}),
       saveContent: this.saveContent,
-      changePass: this.changePass,
+      signOutAdmin: this.signOutAdmin,
       resetContent: this.resetContent,
       exportContent: this.exportContent,
       importContent: this.importContent,
